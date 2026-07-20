@@ -261,6 +261,13 @@ Mobile browser QA: PASS at 390x844; 48px minimum CTA, no overflow
 Console errors: PASS - 0 warnings / 0 errors after bundled and real-upload flows
 Secret scan: PASS - ignored .env.local; no key-shaped value in tracked source
 
+Local demo video: PASS - 93.000s, 1920x1080 H.264/yuv420p/30fps,
+AAC 48kHz stereo, -16.01 LUFS, -4.50 dBTP, 0 decode errors, no trimmed speech
+Captions: PASS - 25 cues, max 2 lines, exact locked narration, final cue at 93.000s
+Video SHA-256: 5c354bea113fbf59269b9f4c1365a55efa89e308b30df9dbb466f94f4e180204
+Video privacy/claims audit: PASS - synthetic data only; live/bundled/simulated
+states separated; AI voice disclosed; no secret or account identifier found
+
 Skipped checks: deployed public URL, public-video playback, 200% zoom, and the
 deployed-origin quota/auth posture remain submission gates.
 Residual risk accepted for submission: receipt binds self-supplied normalized

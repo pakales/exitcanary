@@ -213,8 +213,9 @@ seed-export-compare loop before purchase or renewal.
       quota/auth/kill switch for live GPT, or an explicitly fallback-only judge
       deployment with the live synthetic smoke demonstrated separately.
 - [x] Verify the no-key/failure fallback is transparent and safe.
-- [ ] Verify the UI and video clearly distinguish live, fallback, and bundled
-      pre-mapped modes, including the explicit GPT consent gate.
+- [x] Verify the UI and local video candidate clearly distinguish live,
+      fallback, and bundled pre-mapped modes, including the explicit GPT
+      consent gate.
 - [x] Verify flawed → not ready/review, complete → ready, and digest change.
 - [x] Verify the receipt disclaimer is visible beside the digest.
 - [x] Verify both `/api/demo-export` variants download and traverse the real
@@ -225,7 +226,8 @@ seed-export-compare loop before purchase or renewal.
 - [ ] Verify desktop/mobile/keyboard/reduced-motion behavior and zero console errors.
 - [ ] Provide a free working demo/test URL and test its full judge path while
       logged out in a clean browser session.
-- [ ] Scan repository, client bundle, video, and screenshots for secrets/private data.
+- [x] Scan repository, client bundle, local video candidate, and screenshots for
+      secrets/private data.
 - [ ] Confirm the repository URL is accessible to judges.
 - [x] Confirm MIT license, README setup, Codex collaboration story, and sample
       data are present whether the judging repository is public or private.
@@ -233,7 +235,7 @@ seed-export-compare loop before purchase or renewal.
       `build-week-event@openai.com`, then verify the invitations.
 - [ ] Record a public YouTube demo under three minutes with audible narration
       explaining both Codex and GPT-5.6.
-- [ ] Remove unlicensed music, footage, copyrighted material, and third-party
+- [x] Remove unlicensed music, footage, copyrighted material, and third-party
       marks unless their use is permitted; keep a source/license note for every
       external asset.
 - [ ] Watch the uploaded video end-to-end while logged out.
@@ -268,6 +270,28 @@ Do not publish any of the following without new evidence and review:
 - proof that a vendor actually ran an export;
 - guarantee that all customer data can be migrated;
 - production-safe handling of sensitive data.
+
+## Local video candidate evidence
+
+The exact local upload candidate is `exitcanary-build-week-demo-1080p.mp4` with
+SHA-256
+`5c354bea113fbf59269b9f4c1365a55efa89e308b30df9dbb466f94f4e180204`.
+It is **not public yet**. Its deterministic production audit passed:
+
+- 93.000 seconds, 1920 × 1080, H.264, `yuv420p`, 30 fps;
+- AAC stereo at 48 kHz, -16.01 LUFS, -4.50 dBTP;
+- 0 decode errors and no trimmed speech;
+- 25 caption cues preserving the locked narration exactly;
+- live mapping, bundled judge path, deterministic verdict, simulated fixture
+  swap, and digest limitations are visually distinct;
+- synthetic OpenAI `marin` voice disclosure is visible and embedded in MP4
+  metadata;
+- secret/account-identifier scan passed;
+- two independent transcription passes preserved the complete intended product
+  meaning and technical terms.
+
+This closes local video production only. YouTube upload, signed-out playback,
+public links, and final user listening approval remain hard gates.
 
 ## Suggested tags
 
