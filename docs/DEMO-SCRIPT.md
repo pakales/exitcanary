@@ -1,138 +1,113 @@
-# 80–90 second demo script
+# Locked 93-second demo script
 
-Target runtime: **about 88 seconds**. Keep the final public video under three
-minutes as required by Build Week. Narration must audibly explain the distinct
-roles of Codex and GPT-5.6.
+Status: **local upload candidate verified; not public yet.** The exact candidate
+is `exitcanary-build-week-demo-1080p.mp4`, SHA-256
+`5c354bea113fbf59269b9f4c1365a55efa89e308b30df9dbb466f94f4e180204`.
 
-## Truth gate before recording
+The video is 93.000 seconds, below the strict three-minute limit. It uses the
+OpenAI `marin` synthetic voice and carries a visible/metadata disclosure. The
+25-cue English SRT matches this narration exactly.
 
-Use the preferred script only after the live synthetic-data smoke test passes
-on the exact recorded build. The first upload must show the **Live ·
-gpt-5.6-sol** badge and a complete proposal; never narrate fallback or bundled
-mode as a live model response. If the live path is not verified, omit that
-interaction, use the bundled-only backup below, and describe GPT's implemented
-role without claiming it ran in the recording.
+## Truth boundary
 
-Pre-final status: the current worktree passed a bounded 33-field live smoke in
-about 21.0 seconds with 33 proposals and zero unresolved targets under the
-30-second timeout. Re-run it on the exact deployed/recorded build before using
-the live narration.
+- The first mapping sequence shows a controlled synthetic live run with the
+  exact **Live · gpt-5.6-sol** badge.
+- The bundled judge sequence is a separate disclosed pre-mapped fixture and
+  makes no GPT call.
+- GPT-5.6 Sol proposes mappings only. Human confirmation is mandatory, and
+  deterministic server code alone owns the verdict.
+- **Apply fixed demo export** is a simulated fixture swap, not a repair.
+- The digest is not a signature, timestamp, or proof of origin.
+- The selected public judge deployment is keyless and fallback-only; submission
+  test instructions must disclose that the live evidence is demonstrated in
+  the video while the free URL uses a labeled deterministic fallback.
 
-The bundled scenario is deliberately different from the live upload path. It
-uses a disclosed, versioned, pre-mapped fixture so judges can reproduce the
-deterministic verdict without a model call. It starts with zero confirmed rows;
-the presenter still reviews and confirms the map.
+## Locked shot list and narration
 
-## Recording setup
+### 0–7 seconds — the procurement blind spot
 
-- Use only the checked-in synthetic ZIPs or bundled synthetic fixtures.
-- Equivalent generated judge ZIPs are also downloadable from
-  `/api/demo-export?variant=flawed` and `?variant=complete` on the running app.
-- Hide API keys, account identifiers, browser extensions, unrelated tabs, and
-  notifications.
-- Use only original or properly licensed visual/audio material. Do not add
-  unlicensed music, footage, or third-party marks.
-- Record the final deployed or locally verified build at readable zoom.
-- Keep the cursor still while speaking; use deliberate clicks.
-- Verify narration, focus, crop, and text-safe margins before uploading.
+**Screen:** Safe 16:9 ExitCanary hero.
 
-## Preferred shot list and narration
+> Teams test how data enters SaaS. Export fidelity can stay untested until
+> leaving is urgent.
 
-### 0–8 seconds — the procurement blind spot
+### 7–20 seconds — plant, export, prove
 
-**Screen:** ExitCanary opening view and exit-door visual.
+**Screen:** Versioned synthetic CRM and the three-step canary loop.
 
-> Teams test how data enters a SaaS product. Exit quality may stay untested
-> until leaving is already urgent.
+> First, adapt and seed a versioned synthetic CRM, then request the vendor's
+> full export. The canary covers relationships, Unicode, history, custom fields,
+> timestamps, and an attachment checksum.
 
-### 8–18 seconds — the known canary
+### 20–30 seconds — bounded GPT data boundary
 
-**Screen:** Select **Download canary pack**; briefly show the bounded object
-list.
+**Screen:** Local parser and explicit-consent boundary.
 
-> ExitCanary starts with a synthetic CRM business: records, relationships,
-> history, Unicode, custom fields, and an attachment. Adapt it to the vendor's
-> import format, then request the vendor's full export.
+> A real export is parsed locally. With explicit consent, only bounded field
+> evidence—not raw files—goes to GPT-5.6 Sol.
 
-### 18–34 seconds — GPT-5.6 Sol's bounded role
+### 30–40 seconds — model proposal, human confirmation
 
-**Screen:** Enable **Use GPT-5.6 semantic mapping**, show its consent text,
-choose **Use my export**, upload the verified synthetic judge ZIP, then show the
-live badge and mapping list. If a target is unresolved, choose only one of its
-bounded candidates.
+**Screen:** Verified live mapping screenshot with the exact model badge, 33
+application-owned targets, and zero confirmed rows.
 
-> With my consent, GPT-5.6 Sol maps unfamiliar export fields back to 33 known
-> canary fields and cites supplied evidence. I can resolve only from bounded
-> candidates, and every row still needs my confirmation. The model never
-> decides the verdict.
+> The model receives 33 application-owned targets and proposes mappings that
+> reference supplied paths. Unresolved targets cannot pass automatically; every
+> mapped row requires human confirmation.
 
-### 34–43 seconds — repeatable judge scenario
+### 40–50 seconds — reproducible judge path
 
-**Screen:** Select **Reject & start over**, then **Run pre-mapped flawed demo**.
-Hold on the pre-mapped disclosure and empty confirmation count.
+**Screen:** **Bundled · mapped**, zero confirmed, and the no-model-call
+disclosure.
 
-> For a repeatable judge path, this bundled flawed fixture uses a disclosed,
-> pre-mapped field set — no model call is claimed here, and nothing is confirmed
-> until I review it.
+> For a repeatable judge path, I switch to the disclosed pre-mapped flawed
+> fixture. It makes no GPT call; confirmations begin at zero.
 
-### 43–58 seconds — deterministic truth
+### 50–56 seconds — deterministic authority
 
-**Screen:** Select **Mark all reviewed**, then **Verify confirmed mapping**;
-show `NOT_EXIT_READY` and the six failed checks.
+**Screen:** **Mark all reviewed**, then deterministic verification.
 
-> Server-side deterministic code finds six exact losses: Unicode, a relation,
-> an activity timestamp, history, a custom field, and the attachment checksum.
-> It refuses an exit-ready verdict.
+> After I mark the rows reviewed, server-side deterministic code—not the
+> model—decides the verdict.
 
-### 58–70 seconds — disclosed simulation
+### 56–67 seconds — six required failures
 
-**Screen:** Show the simulation note, then select **Apply fixed demo export**.
+**Screen:** `NOT EXIT-READY` and the six authoritative failed checks.
 
-> This is explicitly simulated. It swaps in the bundled complete fixture and
-> re-evaluates; it does not repair a vendor account or repository.
+> It returns NOT EXIT-READY with six failures: Unicode, a relation, the activity
+> timestamp, history, the custom field, and the attachment checksum.
 
-### 70–88 seconds — bounded proof and close
+### 67–76 seconds — disclosed simulation
 
-**Screen:** Show `EXIT_READY`, nine passes, changed digest, and the visible
-receipt disclaimer.
+**Screen:** Simulation notice and **Apply fixed demo export**.
 
-> Now all nine bounded checks pass and a new digest detects changed receipt
-> inputs. It is not a signature or proof of origin. Codex built and red-teamed
-> the product; GPT-5.6 handles only semantic mapping. Before you enter, prove
-> you can leave.
+> This action is explicitly simulated: it swaps in the complete fixture and
+> re-evaluates, changing no vendor account or repository.
 
-## Bundled-only backup
+### 76–93 seconds — fresh evidence and close
 
-If the live model path is not verified, begin the product interaction at the
-34-second shot and use this replacement sentence while the opening view shows
-**Use my export**:
+**Screen:** `EXIT READY`, 9/9, changed digest, limitation, and Codex/GPT role
+split.
 
-> Real uploads use GPT-5.6 Sol for evidence-referenced semantic mapping, with a
-> clear consent gate and labeled exact-alias fallback. This recording uses the
-> separate pre-mapped fixture so the verdict is reproducible without a paid
-> model call; I still confirm every mapping.
+> All nine bounded checks now pass. Changed inputs produce a new SHA-256
+> digest—not a signature, timestamp, or origin proof. Codex built and tested
+> ExitCanary; GPT-5.6 Sol only proposes semantic mappings. Before you enter,
+> prove you can leave.
 
-Do not display a fallback badge while saying GPT ran. Keep the remainder of the
-script unchanged and target 70–80 seconds.
+## Publication gate
 
-## On-screen truth checklist
+- [x] 93.000 seconds; H.264, `yuv420p`, 30 fps, 1920 × 1080.
+- [x] AAC stereo, 48 kHz, -16.01 LUFS, -4.50 dBTP.
+- [x] Zero decode errors, no trimmed speech, longest silence 2.288 seconds.
+- [x] 25 English cues, at most two lines, exact locked narration.
+- [x] Live, fallback/bundled, deterministic verdict, and simulation states are
+      visually distinct.
+- [x] Digest limitation and synthetic voice disclosure are visible.
+- [x] Secret/account-identifier and claim scans pass.
+- [ ] Upload to **public YouTube**; unlisted visibility is not sufficient.
+- [ ] Watch the uploaded 1080p version with captions and audio while signed out.
+- [ ] Copy the final public URL into the submission and re-check runtime.
 
-- [ ] Final UI labels match the narration exactly.
-- [ ] Live, fallback, and bundled states are never conflated.
-- [ ] The spoken six failures match the actual check results.
-- [ ] The simulated fixture-swap disclosure is readable before the click.
-- [ ] The complete fixture is actually re-evaluated.
-- [ ] The full digest visibly changes.
-- [ ] The digest disclaimer is legible beside the receipt.
-- [ ] No “first,” “only,” “universal,” “tamper-proof,” or compliance guarantee.
-- [ ] No real customer data, secret, private ID, or unrelated project is visible.
-- [ ] Public YouTube visibility, audio, resolution, crop, and runtime are
-  verified while logged out.
-
-## Optional 15-second backup close
-
-Use only if the core demo is comfortably below 90 seconds:
-
-> ExitCanary does not replace migration testing or contract review. It gives
-> operations and procurement a repeatable technical drill while they still
-> have leverage — before an annual commitment or renewal.
+Do not rebuild or re-record merely because the product gained non-visual
+fail-closed deployment hardening after capture. Rebuild only if public behavior,
+visible copy, model/verdict roles, narration, or claims no longer match.

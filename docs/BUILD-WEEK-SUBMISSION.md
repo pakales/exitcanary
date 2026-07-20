@@ -8,9 +8,11 @@ Official references checked on 2026-07-21:
 - [Devpost challenge page](https://openai.devpost.com/)
 - [Official rules](https://openai.devpost.com/rules)
 
-The Devpost page lists a deadline of **July 21, 2026 at 5:00 PM PDT**, requires a
+The Devpost page lists a deadline of **July 21, 2026 at 5:00 PM PDT**
+(**July 22 at 3:00 AM EEST**), requires a
 working project built with Codex using GPT-5.6, a category, description, a free
-working demo/test URL, a public demo video under three minutes with audio
+working demo/test URL, a public YouTube demo video (not unlisted) under three
+minutes with audio
 covering both Codex and GPT-5.6, and a testable code repository with relevant
 licensing and setup/sample guidance. A private repository must be shared with
 `testing@devpost.com` and `build-week-event@openai.com`. The submission also
@@ -19,8 +21,9 @@ page immediately before submission.
 
 The official rules define the submission period as July 13, 2026 at 9:00 AM PT
 through July 21, 2026 at 5:00 PM PT and the judging period as July 22 at 10:00
-AM PT through August 5 at 5:00 PM PT. If an overview page shows a different
-judging date, the official rules control.
+AM PT through August 5 at 5:00 PM PT. The OpenAI overview currently names
+August 7 instead. Treat the official rules as authoritative and operationally
+keep the public artifacts available through at least August 12.
 
 ## Submission identity
 
@@ -29,12 +32,12 @@ judging date, the official rules control.
 | Project name | ExitCanary |
 | Tagline | Before you enter, prove you can leave. |
 | Category | **Work & Productivity** |
-| Repository URL | TBD / verify before submission |
-| Demo URL | TBD / public YouTube, audio and runtime verified |
-| Free working demo/test URL | TBD / verify while logged out before submission |
-| Codex `/feedback` session ID | TBD / real core-build session only |
+| Repository URL | **PENDING PUBLICATION** — verify judge access before submission |
+| Demo URL | **PENDING PUBLICATION** — public YouTube playback must pass signed-out QA |
+| Free working demo/test URL | **PENDING PUBLICATION** — verify the full judge path signed out |
+| Codex `/feedback` session ID | **PENDING HUMAN CONFIRMATION** — current core-build thread candidate is `019f813d-fdfb-7e93-8365-783b07ade86f`; use the exact ID returned by `/feedback` |
 | License | MIT |
-| Team/member details | TBD / match Devpost account |
+| Team/member details | **PENDING HUMAN CONFIRMATION** — match the Devpost account and authorization |
 
 ## Short description
 
@@ -90,10 +93,11 @@ ExitCanary is a TypeScript/Next.js application with a strict data boundary:
 - pure deterministic evaluation and receipt generation;
 - synthetic flawed and complete fixtures for a no-account judge demo;
 - downloadable synthetic judge ZIP endpoints for the real parser/mapper lane;
-- automated contracts for verdicts, mapping references, and digest behavior.
-
-`TBD / verify before submission:` update this list to match the final source and
-only mention controls that have been tested.
+- automated contracts for verdicts, mapping references, digest behavior, and
+  hostile parser/request boundaries;
+- a fail-closed public posture: live mapping runs only when the server flag is
+  exactly `true`, while the judge deployment preflight requires no API key and
+  an explicit fallback-only configuration.
 
 ### How GPT-5.6 is used
 
@@ -106,10 +110,12 @@ The model is intentionally denied verdict authority. This makes the AI useful
 where rigid code is brittle without asking it to be authoritative where exact,
 reproducible checks matter.
 
-Pre-final synthetic smoke evidence: with the mapper timeout set to 30 seconds,
+Controlled synthetic smoke evidence: with the mapper timeout set to 30 seconds,
 the full 33-field request returned `mode: "live"`, model `gpt-5.6-sol`, 33
-proposals, zero unresolved targets, and no warning in about 21.0 seconds. Re-run
-this on the exact committed/deployed build before recording or submission.
+proposals, zero unresolved targets, and no warning in about 21.0 seconds. The
+locked video visibly identifies that run as live. The public judge URL is
+intentionally keyless and fallback-only, so it does not claim public live-model
+availability.
 
 ### How Codex was used
 
@@ -122,8 +128,11 @@ Codex was used as the primary build environment to:
 - generate and run targeted validation, review failure modes, and synchronize the
   architecture, threat model, demo, and submission package.
 
-`TBD / verify before submission:` add two or three concrete examples from the
-actual core-build session and supply that session's real `/feedback` ID.
+Concrete examples from the build session include finding and fixing a
+parser-to-confirmation path-length mismatch, proving ZIP expansion limits
+before unsafe inflation, and red-teaming an inherited API key into an explicit
+exact-`true` live flag plus a deployment preflight. The real `/feedback` ID is
+still an account-side submission gate and must not be inferred from source code.
 
 ### Challenges
 
@@ -176,10 +185,10 @@ unclear product experience or unsupported impact claim.
 
 | Criterion | What the submission should show | Gate |
 | --- | --- | --- |
-| Technological implementation | Real CSV/JSON/ZIP intake, structured GPT-5.6 mapping, strict authority boundary, deterministic checks, tests | Product commit `5e463be` passed `pnpm verify`: 11 files / 60 tests plus build/audit |
-| Design | Coherent 60–90s start-to-verdict flow, clear exit-door metaphor, accessible desktop/mobile UI | Production browser QA passed at 1440×900 and 390×844; screenshots captured; final deployed-origin rerun TBD |
-| Potential impact | Named buyer and buying/renewal moment; exact failures the product exposes | Draft complete; validate demo evidence |
-| Quality of idea | Executable pre-purchase exit drill positioned against adjacent checklists, migration, and cloud-exit tools | Draft complete; avoid novelty overclaim |
+| Technological implementation | Real CSV/JSON/ZIP intake, structured GPT-5.6 mapping, strict authority boundary, deterministic checks, tests | Final local source built on product commit `bc4d772` passed 12 Vitest files / 82 tests, five public-preflight tests, the production build, and dependency audit |
+| Design | Coherent 93-second start-to-verdict story, clear exit-door metaphor, accessible desktop/mobile UI | Local production QA passed at 1440×900, 390×844, 200% equivalent reflow, reduced motion, keyboard flow, and zero console errors; deployed-origin rerun remains a publication gate |
+| Potential impact | Named buyer and buying/renewal moment; exact failures the product exposes | Submission copy and deterministic flawed/complete evidence are complete locally |
+| Quality of idea | Executable pre-purchase exit drill positioned against adjacent checklists, migration, and cloud-exit tools | Analog red-team is documented without a first/only claim |
 
 ## Honest analog positioning
 
@@ -209,9 +218,9 @@ seed-export-compare loop before purchase or renewal.
       text depict.
 - [x] Run and record `pnpm verify` on the local product commit.
 - [x] Run the live GPT-5.6 Sol synthetic-data smoke test.
-- [ ] Choose and document the public credential posture: verified durable
-      quota/auth/kill switch for live GPT, or an explicitly fallback-only judge
-      deployment with the live synthetic smoke demonstrated separately.
+- [x] Choose and document the public credential posture: keyless,
+      fallback-only judge deployment with live synthetic GPT evidence shown
+      separately; see `docs/PUBLIC-DEMO-DEPLOYMENT.md`.
 - [x] Verify the no-key/failure fallback is transparent and safe.
 - [x] Verify the UI and local video candidate clearly distinguish live,
       fallback, and bundled pre-mapped modes, including the explicit GPT
@@ -223,7 +232,7 @@ seed-export-compare loop before purchase or renewal.
 - [ ] Pin and verify `EXITCANARY_PUBLIC_ORIGIN` on the deployed canonical URL.
 - [x] Exercise `EXITCANARY_LIVE_MAPPING_ENABLED=false` and confirm no model call
       occurs.
-- [ ] Verify desktop/mobile/keyboard/reduced-motion behavior and zero console errors.
+- [x] Verify desktop/mobile/keyboard/reduced-motion behavior and zero console errors.
 - [ ] Provide a free working demo/test URL and test its full judge path while
       logged out in a clean browser session.
 - [x] Scan repository, client bundle, local video candidate, and screenshots for
@@ -233,8 +242,9 @@ seed-export-compare loop before purchase or renewal.
       data are present whether the judging repository is public or private.
 - [ ] If private, share repository access with `testing@devpost.com` and
       `build-week-event@openai.com`, then verify the invitations.
-- [ ] Record a public YouTube demo under three minutes with audible narration
-      explaining both Codex and GPT-5.6.
+- [ ] Upload the verified 93-second local candidate to public YouTube (not
+      unlisted); it already includes audible narration explaining Codex and
+      GPT-5.6.
 - [x] Remove unlicensed music, footage, copyrighted material, and third-party
       marks unless their use is permitted; keep a source/license note for every
       external asset.
@@ -243,18 +253,20 @@ seed-export-compare loop before purchase or renewal.
 - [ ] If the demo is private, include working judge credentials and test them in
       a clean session.
 - [ ] Keep the project available free of charge and without restriction through
-      August 5, 2026 at 5:00 PM PT, the official judging-period end.
-- [ ] Confirm the description, video, test instructions, and all submission
-      materials are in English or include the required English translation.
+      at least August 12, covering the official August 5 judging end and the
+      overview page's later August 7 date.
+- [x] Confirm the local description, video, captions, and test instructions are
+      in English; recheck the pasted Devpost fields before submission.
 - [ ] Confirm original ownership, privacy/publicity rights, third-party SDK/API
       authorization, and open-source license compliance.
-- [ ] Confirm the repository and downloadable artifacts contain no malicious or
-      disabling code.
+- [x] Confirm the repository and downloadable artifacts contain no malicious or
+      disabling code in the reviewed local source and locked media candidate.
 - [ ] Capture the real `/feedback` Codex session ID from the session where most
       core functionality was built.
 - [ ] If other projects are submitted by the same entrant, document that each is
       unique and substantially different.
-- [ ] Remove every `TBD` that affects judge access or factual claims.
+- [x] Replace factual placeholders with verified evidence or explicit
+      publication/human-confirmation gates.
 - [ ] Submit before the live deadline; confirm Devpost shows the project as submitted.
 - [ ] Freeze the submitted materials at the deadline; the official rules do not
       permit ordinary substantive submission changes afterward.
@@ -290,8 +302,8 @@ It is **not public yet**. Its deterministic production audit passed:
 - two independent transcription passes preserved the complete intended product
   meaning and technical terms.
 
-This closes local video production only. YouTube upload, signed-out playback,
-public links, and final user listening approval remain hard gates.
+This closes local video production and the user's voice-choice approval only.
+YouTube upload, signed-out playback, and public links remain hard gates.
 
 ## Suggested tags
 

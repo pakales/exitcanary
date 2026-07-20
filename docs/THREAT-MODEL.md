@@ -51,27 +51,27 @@ connections, shared workspaces, scheduled tests, or arbitrary document formats.
 
 | Threat | Impact | Required control | Verification status |
 | --- | --- | --- | --- |
-| Prompt injection in filenames, headers, keys, or cells | Model follows data as instructions | Delimit untrusted data; fixed developer instructions; strict structured output; deterministic verdict boundary | TBD before submission |
-| Model hallucination or invented paths | False mapping | Validate canonical IDs and every evidence reference against the supplied packet | TBD before submission |
-| Model sets or implies verdict | Authority confusion | Exclude verdict fields from model schema; construct verdict only in deterministic code | TBD before submission |
-| API key exposure | Credential abuse | Server-only module and env var; no `NEXT_PUBLIC_`; secret scanning/build inspection | TBD before submission |
-| Oversized request | Memory, latency, and cost denial of service | Content-type enforcement, byte limit, schema bounds, early rejection | TBD before submission |
-| ZIP bomb | CPU/memory denial of service | Inspect declared expansion before inflation; bound entries, declared/measured totals, and per-entry size | High-ratio regression implemented; final suite TBD |
-| ZIP path traversal | Unsafe path handling | Normalize archive paths; reject absolute paths, `..`, and duplicate normalized paths | TBD before submission |
-| Deep or cyclic JSON | Parser exhaustion | Bound payload bytes and nesting depth; reject invalid structures | TBD before submission |
-| CSV formula injection | Downstream spreadsheet execution | Treat cells as data; never auto-open or export executable formulas; escape if future CSV generation is added | TBD before submission |
-| XSS from evidence or model prose | Browser compromise | React text rendering only; never raw HTML; restrictive response headers | TBD before submission |
-| Cross-origin paid API calls | Budget abuse | Pin `EXITCANARY_PUBLIC_ORIGIN`; reject mismatched origins; never trust forwarded headers | Implemented in source; deployed-origin test TBD |
-| Unbounded model use | Cost denial of service | Explicit user consent, operator kill switch, timeout, output bounds, zero automatic retries, and deployment quota | Kill switch implemented; durable public quota TBD |
-| Logging sensitive content | Privacy leak | No body/model logging; sanitize error telemetry | TBD before submission |
-| Hidden persistence or model retention | Privacy mismatch | No application storage; Responses API `store: false`; document transient processing | TBD before submission |
-| Check-registry override by client | False pass | Application-owned, versioned registry evaluated on the server; strict schemas reject extra policy fields | TBD before submission |
-| Mapping-target override by client | Misleading semantic proposal | `/api/map` rejects caller targets and injects the 33-field application registry; bridge/evaluator reject unknown fields | Implemented in source; final gate TBD |
-| Mapping race or stale receipt | Result bound to wrong inputs | Immutable assessment input, digest binding, re-evaluate after any change | TBD before submission |
-| Client-computed or injected verdict | False authority | UI calls server `/api/evaluate`; strict request has no verdict; server returns verdict and digest | Implemented in source; final integration TBD |
-| Digest described as proof/signature | Misleading assurance | Explicit disclaimer beside the on-screen receipt and in documentation | Current production browser gate passed; deployed-origin rerun TBD |
-| Cross-site framing or mixed-content downgrade | UI deception or transport downgrade | Frame denial, same-origin resource/opener policy, HSTS, CSP upgrade-insecure requests | Implemented in production config; deployed-header test TBD |
-| Dependency or build compromise | Secret/data exposure | Lockfile, production audit, minimal dependencies, review build output | PostCSS pinned to 8.5.20; product commit `5e463be` passed full verify/build/audit |
+| Prompt injection in filenames, headers, keys, or cells | Model follows data as instructions | Delimit untrusted data; fixed developer instructions; strict structured output; deterministic verdict boundary | PASS — prompt-looking data regressions at mapper and route boundaries |
+| Model hallucination or invented paths | False mapping | Validate canonical IDs and every evidence reference against the supplied packet | PASS — invented path and unknown target regressions |
+| Model sets or implies verdict | Authority confusion | Exclude verdict fields from model schema; construct verdict only in deterministic code | PASS — model-output and evaluator verdict-injection regressions |
+| API key exposure | Credential abuse | Server-only module and env var; no `NEXT_PUBLIC_`; secret scanning/build inspection | PASS locally — server-only import, tracked-source/client-bundle scan, public preflight |
+| Oversized request | Memory, latency, and cost denial of service | Content-type enforcement, byte limit, schema bounds, early rejection | PASS — advertised, streamed, upload, source-count, and schema-bound regressions |
+| ZIP bomb | CPU/memory denial of service | Inspect declared expansion before inflation; bound entries, declared/measured totals, and per-entry size | PASS — high-ratio and entry-count regressions |
+| ZIP path traversal | Unsafe path handling | Normalize archive paths; reject absolute paths, `..`, and duplicate normalized paths | PASS — traversal, absolute, drive, and normalized-collision regressions |
+| Deep or cyclic JSON | Parser exhaustion | Bound payload bytes and nesting depth; reject invalid structures | PASS for JSON depth/node bounds; cyclic data cannot exist in JSON text |
+| CSV formula injection | Downstream spreadsheet execution | Treat cells as data; never auto-open or export executable formulas; escape if future CSV generation is added | PASS — formula-looking cell remains inert text |
+| XSS from evidence or model prose | Browser compromise | React text rendering only; never raw HTML; restrictive response headers | IMPLEMENTED/INSPECTED — no raw-HTML sink; local production CSP/header audit passed |
+| Cross-origin paid API calls | Budget abuse | Pin `EXITCANARY_PUBLIC_ORIGIN`; reject mismatched origins; never trust forwarded headers | PASS locally; deployed canonical-origin check remains public gate |
+| Unbounded model use | Cost denial of service | Explicit user consent, fail-closed live switch, timeout, output bounds, zero automatic retries, and deployment quota | PUBLIC RISK AVOIDED — selected judge posture is keyless fallback-only; live public promotion remains blocked |
+| Logging sensitive content | Privacy leak | No body/model logging; sanitize error telemetry | IMPLEMENTED/INSPECTED — no application logging sink; sanitized 500/503 regressions pass |
+| Hidden persistence or model retention | Privacy mismatch | No application storage; Responses API `store: false`; document transient processing | IMPLEMENTED/TESTED — no persistence layer; model request asserts `store: false` |
+| Check-registry override by client | False pass | Application-owned, versioned registry evaluated on the server; strict schemas reject extra policy fields | PASS — client check-registry and request extra-key regressions |
+| Mapping-target override by client | Misleading semantic proposal | `/api/map` rejects caller targets and injects the 33-field application registry; bridge/evaluator reject unknown fields | PASS — route, registry, unknown-target, and long-path bridge regressions |
+| Mapping race or stale receipt | Result bound to wrong inputs | Immutable assessment input, digest binding, re-evaluate after any change | PASS at deterministic boundary; UI race remains residual below |
+| Client-computed or injected verdict | False authority | UI calls server `/api/evaluate`; strict request has no verdict; server returns verdict and digest | PASS — route, evaluator, and production-browser flows |
+| Digest described as proof/signature | Misleading assurance | Explicit disclaimer beside the on-screen receipt and in documentation | PASS locally — UI contract and production-browser flow |
+| Cross-site framing or mixed-content downgrade | UI deception or transport downgrade | Frame denial, same-origin resource/opener policy, HSTS, CSP upgrade-insecure requests | PASS on local production server; deployed-header rerun remains public gate |
+| Dependency or build compromise | Secret/data exposure | Lockfile, production audit, minimal dependencies, review build output | PASS — commit `bc4d772` full verify/build/audit, no known production vulnerabilities |
 
 The browser parser currently caps uploads at 2 MiB; bounds archive entries,
 declared and actual expanded bytes, entry bytes, and paths; rejects duplicate
@@ -82,8 +82,9 @@ headers, and sanitized error bodies. The mapper pins `gpt-5.6-sol`, sets
 `store: false`, uses strict Zod structured output, validates returned canonical
 targets and evidence paths, caps output at 4,096 tokens, sets a 30-second
 timeout, and sets zero automatic retries. A bounded 33-field synthetic live
-smoke completed with all mappings after the timeout was raised to 30 seconds;
-the full security matrix and deployed public posture remain unverified. The
+smoke completed with all mappings after the timeout was raised to 30 seconds.
+The automated security matrix and local production-browser gates pass; only the
+provider-specific public origin and signed-out judge path remain unverified. The
 evaluation route independently enforces JSON, same-origin browser requests, a streamed
 512 KiB limit, strict packet/mapping schemas, sanitized errors, and no-store
 responses before returning the server-computed receipt.
@@ -161,7 +162,12 @@ Even after the required controls pass:
 - the production CSP still permits inline script/style required by the current
   framework build, so nonce/hash hardening remains future work;
 - a public unauthenticated model endpoint remains a cost-abuse risk without
-  durable rate limiting.
+  durable rate limiting;
+- a rapid user action or stale browser response has no dedicated UI race
+  regression, although immutable evaluation inputs and changing digests protect
+  the deterministic receipt boundary;
+- React text rendering and the absence of a raw-HTML sink reduce XSS exposure,
+  but no dedicated adversarial rendered-payload browser test exists yet;
 
 ## Pre-deployment change gates
 
@@ -196,3 +202,8 @@ The free judge URL creates an explicit credential decision:
 Do not silently ship a paid unauthenticated endpoint behind only the
 process-local limiter. The selected posture and its limitations must match the
 video, README, test instructions, and submission text.
+
+ExitCanary selects option 2 for Build Week. Commit `bc4d772` makes live mapping
+fail closed unless the server flag is exactly `true` and adds
+`pnpm preflight:public-fallback`; see
+[PUBLIC-DEMO-DEPLOYMENT.md](PUBLIC-DEMO-DEPLOYMENT.md).

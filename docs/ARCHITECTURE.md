@@ -244,9 +244,10 @@ IP/user-agent bucket per 10 minutes); it is not a durable production quota and
 resets with the server process.
 
 Production deployments should pin `EXITCANARY_PUBLIC_ORIGIN`; origin checks do
-not trust forwarded headers. `EXITCANARY_LIVE_MAPPING_ENABLED=false` is the
-operator kill switch that forces a labeled deterministic fallback even if an
-API key exists. The production Next.js configuration adds HSTS, same-origin
+not trust forwarded headers. Live mapping runs only when
+`EXITCANARY_LIVE_MAPPING_ENABLED` is exactly `true`; missing, false, or malformed
+values force a labeled deterministic fallback even if an API key is inherited.
+The production Next.js configuration adds HSTS, same-origin
 resource/opener isolation, an origin-agent cluster, and a restrictive baseline
 content-security policy. These controls do not replace durable per-identity
 quota before a public paid model endpoint is enabled.

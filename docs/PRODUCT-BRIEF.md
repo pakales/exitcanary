@@ -96,7 +96,7 @@ missing relationship into existence.
 - bundled flawed and complete scenarios;
 - human mapping confirmation;
 - deterministic verdict and receipt;
-- 60–90 second no-account demo.
+- roughly 90-second no-account demo.
 
 ### Out of scope
 
@@ -161,8 +161,9 @@ or consultant engagement.
 - evidence-pack export for procurement and legal review;
 - consultant and MSP portfolio plans.
 
-Pricing is deliberately **TBD** until buyer interviews establish whether the
-budget sits in procurement, IT operations, privacy, or implementation services.
+Pricing remains intentionally unpriced until buyer interviews establish whether
+the budget sits in procurement, IT operations, privacy, or implementation
+services.
 
 ## Go-to-market hypothesis
 

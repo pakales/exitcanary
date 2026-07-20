@@ -279,6 +279,12 @@ The API response labels its origin:
 - a bounded warning explains missing key, operator-disabled live mapping,
   refusal, timeout, invalid output, or provider failure.
 
+The server attempts a live model call only when
+`EXITCANARY_LIVE_MAPPING_ENABLED` is exactly `true`. Every other value is a
+fail-closed fallback state, including when an API key is present in the parent
+environment. Confirmed mapping source-table paths preserve the parser's same
+360-character bound instead of narrowing valid evidence after parsing.
+
 Successful responses are JSON with `Cache-Control: no-store, max-age=0` and
 rate-limit headers. Boundary failures use stable HTTP statuses and an
 `{ "error": { "code", "message" } }` object; they do not echo supplied

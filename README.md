@@ -79,11 +79,11 @@ private random value of at least 16 characters and never commit it. The current
 process-local rate limit is a demo guardrail, not a production quota.
 
 Set `EXITCANARY_PUBLIC_ORIGIN` to the exact canonical origin in production; the
-request boundary does not trust forwarded headers. Set
-`EXITCANARY_LIVE_MAPPING_ENABLED=false` to stop paid model calls immediately and
-force a labeled deterministic fallback. Do not expose a public live key behind
-only the process-local limiter: durable identity/quota, abuse monitoring, and an
-operational kill switch are pre-public gates.
+request boundary does not trust forwarded headers. Live mapping runs only when
+`EXITCANARY_LIVE_MAPPING_ENABLED` is exactly `true`; every other value forces a
+labeled deterministic fallback even if a key is inherited. Do not expose a
+public live key behind only the process-local limiter: durable identity/quota,
+abuse monitoring, and an operational kill switch are pre-public gates.
 
 The selected Build Week public posture is a keyless, fallback-only judge URL.
 Its fail-closed environment check and signed-out verification procedure are in
@@ -126,8 +126,8 @@ Public synthetic judge ZIPs are checked in under [`examples/exports`](examples/e
 and are also available from `GET /api/demo-export?variant=flawed` and
 `GET /api/demo-export?variant=complete` on a running instance.
 
-See [the recording script](docs/DEMO-SCRIPT.md) for a judge-focused 60–90 second
-walkthrough.
+See [the recording script](docs/DEMO-SCRIPT.md) for the locked 93-second
+walkthrough and its claim gates.
 
 ## Built with Codex and GPT-5.6
 
@@ -154,9 +154,10 @@ GPT-5.6 Sol's runtime contribution is different from Codex's build role: the
 model interprets unfamiliar export field names under a strict structured-output
 contract and has no verdict field.
 
-Before submission, preserve the dated repository history, add the real primary
-build thread's `/feedback` session ID to Devpost, and replace the validation
-TBDs in [docs/TESTING.md](docs/TESTING.md) with results from the final source.
+Before submission, preserve the dated repository history and confirm the real
+primary build thread's `/feedback` session ID in Devpost. Judge URLs, public
+video playback, account eligibility, and deployed-origin checks remain explicit
+public gates in the submission checklist.
 
 ## Verification
 
@@ -169,10 +170,10 @@ pnpm audit:prod
 pnpm verify
 ```
 
-`pnpm verify` is the repository gate. The root build session ran it successfully
-against local product commit `5e463be7ced72b36f5dbd8bdbcb51ea7a94203c1`:
-lint, typecheck, 11 test files / 60 tests, production build, and production
-audit all passed. The full manual and automated matrix is in
+`pnpm verify` is the repository gate. The final local source tree, built on
+product commit `bc4d772`, passed lint, typecheck, 12 Vitest files / 82 tests,
+five public-preflight tests, the production build, and the production audit.
+The full manual and automated matrix is in
 [docs/TESTING.md](docs/TESTING.md).
 
 The bounded synthetic live-mapping smoke also passed on this worktree after the

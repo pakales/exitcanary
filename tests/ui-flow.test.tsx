@@ -37,6 +37,33 @@ afterEach(() => {
 });
 
 describe("ExitCanary human confirmation flow", () => {
+  it("supports keyboard-only entry and consent control", async () => {
+    const user = userEvent.setup();
+    render(<ExitCanaryApp />);
+
+    const skipLink = screen.getByRole("link", { name: "Skip to exit test" });
+    const homeLink = screen.getByRole("link", { name: "ExitCanary home" });
+    const demoButton = screen.getByRole("button", {
+      name: "Run 60-second demo",
+    });
+    const consent = screen.getByRole("checkbox", {
+      name: /Use GPT-5.6 semantic mapping/i,
+    });
+
+    await user.tab();
+    expect(skipLink).toHaveFocus();
+    await user.tab();
+    expect(homeLink).toHaveFocus();
+    await user.tab();
+    expect(demoButton).toHaveFocus();
+    await user.tab();
+    expect(consent).toHaveFocus();
+    expect(consent).not.toBeChecked();
+
+    await user.keyboard("[Space]");
+    expect(consent).toBeChecked();
+  });
+
   it("keeps OpenAI mapping opt-in and exposes real judge ZIPs", () => {
     render(<ExitCanaryApp />);
 

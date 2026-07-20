@@ -17,110 +17,90 @@ The repository script is expected to run, in order:
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm test:public-preflight
 pnpm build
 pnpm audit:prod
 ```
 
-`TBD / verify before submission:` paste the final UTC timestamp, commit SHA,
-Node/pnpm versions, command result, and any accepted residual risk into the
-validation record below.
-
-Current targeted evidence reported by the root build session on 2026-07-21:
-the bounded parser suite passed 7/7, the deterministic core suite passed 12/12,
-the repository typecheck passed at those source points, and the two checked-in
-judge ZIPs passed parser → normalizer → evaluator coverage: complete produced
-`EXIT_READY` with 9/9 passes; flawed produced `NOT_EXIT_READY` with six
-failures. The root session also reported a clean production dependency audit
-after pinning PostCSS 8.5.20. These targeted results are not bound to a final
-commit and are not the final `pnpm verify` record; rerun them against the exact
-submission source.
-
-The documentation workstream re-ran the current artifact/download gate on
-2026-07-21:
-
-```bash
-pnpm exec vitest run tests/end-to-end-artifacts.test.ts \
-  tests/demo-export-route.test.ts tests/canary-pack.test.ts
-```
-
-Result: **3 test files passed, 7 tests passed**. This verifies both checked-in
-ZIPs, both generated demo-export variants, invalid-variant rejection, public
-canary JSON drift, and generated canary ZIP contents on that worktree state. It
-is also covered by the repository-wide commit-bound `pnpm verify` below.
-
-The root build session subsequently ran the full repository gate against local
-product commit `5e463be7ced72b36f5dbd8bdbcb51ea7a94203c1`:
-**`pnpm verify` passed**, including lint, typecheck, 11 test files / 60 tests,
-production build, and production dependency audit. Tool versions were Node
+The root build session ran the full gate against the final local source tree
+built on product commit `bc4d772`: **`pnpm verify` passed** at
+`2026-07-20T23:25:12Z`, including lint, typecheck, 12 Vitest files / 82 tests,
+five independent public-preflight tests, the production build, and a production
+dependency audit with no known vulnerabilities. Tool versions were Node
 `v22.22.2` and pnpm `10.33.2`.
+
+This commit adds fail-closed live-model activation, a keyless fallback-only
+public deployment preflight, checked-in ZIP → fallback → human-confirmed
+evaluation coverage, and adversarial parser/API regressions. Public URL,
+provider configuration, and signed-out judge checks remain separate gates.
 
 ## Deterministic test matrix
 
 | Case | Required assertion | Status |
 | --- | --- | --- |
-| Complete checked-in ZIP | Parser → normalizer → evaluator produces nine passes and `EXIT_READY` | Targeted artifact test passed; final suite TBD |
-| Flawed checked-in ZIP | Parser → normalizer → evaluator produces six failures and `NOT_EXIT_READY` | Targeted artifact test passed; final suite TBD |
+| Complete checked-in ZIP | Parser → normalizer → evaluator produces nine passes and `EXIT_READY` | PASS — `end-to-end-artifacts.test.ts` |
+| Flawed checked-in ZIP | Parser → normalizer → evaluator produces six failures and `NOT_EXIT_READY` | PASS — `end-to-end-artifacts.test.ts` |
 | Complete bundled export | Server API returns every required check as pass and verdict `EXIT_READY` | Production browser PASS: 9 pass / 0 fail, 64-char digest |
 | Flawed bundled export | Server API returns six authoritative failures and `NOT_EXIT_READY` | Production browser PASS: 6 fail / 3 pass, 64-char digest |
-| Ambiguous required mapping | Verdict is `NEEDS_REVIEW`; never a pass | TBD |
-| Missing required record | Stable failing check ID and `NOT_EXIT_READY` | TBD |
-| Broken relationship | Parent/foreign-key check fails | TBD |
-| Damaged Unicode | Value-integrity check fails | TBD |
-| Missing custom field | Custom-field check fails | TBD |
-| Missing history | History check fails | TBD |
-| Missing or changed attachment evidence | Attachment check fails | TBD |
-| Packet changes | Receipt digest changes | TBD |
-| Confirmed mapping changes | Receipt digest changes | TBD |
-| Property/key order changes only | Digest remains stable if canonical data is equivalent | TBD |
-| Client attempts to redefine checks | Strict schema rejects the packet | TBD |
-| Mapping target bridge | Produces exactly the 33 application-owned canonical fields | TBD |
-| Unknown model canonical ID | Model response rejected | TBD |
-| Invented model evidence path | Model response rejected | TBD |
-| Model attempts verdict output | Schema rejects or ignores it; deterministic verdict unchanged | TBD |
-| Model unavailable | Transparent fallback; no fabricated live output or false pass | TBD |
+| Ambiguous required mapping | Verdict is `NEEDS_REVIEW`; never a pass | PASS — missing, unconfirmed, and ambiguous evaluator cases |
+| Missing required record | Stable failing check ID and `NOT_EXIT_READY` | PASS — missing-company evaluator case |
+| Broken relationship | Parent/foreign-key check fails | PASS — flawed fixture asserts `relations.integrity` |
+| Damaged Unicode | Value-integrity check fails | PASS — flawed fixture asserts `contacts.unicode` |
+| Missing custom field | Custom-field check fails | PASS — flawed fixture asserts `custom_fields.value` |
+| Missing history | History check fails | PASS — flawed fixture asserts `activities.history` |
+| Missing or changed attachment evidence | Attachment check fails | PASS — flawed fixture plus missing-binary normalization case |
+| Packet changes | Receipt digest changes | PASS — evaluator digest regression |
+| Confirmed mapping changes | Receipt digest changes | PASS — evaluator digest regression |
+| Property/key order changes only | Stable serialization is identical for canonical equivalents | PASS — property-order regression |
+| Client attempts to redefine checks | Strict schema rejects the packet | PASS — client check-registry injection regression |
+| Mapping target bridge | Produces exactly 33 fields and preserves parser-valid 360-character paths | PASS — mapping-target adapter regressions |
+| Unknown model canonical ID | Model response rejected | PASS — model target regression |
+| Invented model evidence path | Model response rejected | PASS — model evidence regression |
+| Model attempts verdict output | Strict model schema rejects it; evaluator authority is unchanged | PASS — model verdict and evaluator injection regressions |
+| Model unavailable or disabled | Transparent fallback; no fabricated live output or false pass | PASS — mapper, route, and judge-posture regressions |
 
 ## Parser and request-boundary matrix
 
 | Case | Required behavior | Status |
 | --- | --- | --- |
-| Valid bounded CSV | Parsed without formula execution or silent coercion | TBD |
-| Valid bounded JSON | Parsed within depth and value limits | TBD |
-| Valid bounded ZIP | Only supported safe entries are considered | TBD |
-| Unsupported file type | Explicit rejection or unsupported label | TBD |
-| Oversized request | Rejected before model call | TBD |
-| Excess ZIP entries/decompressed bytes | Rejected before full extraction | TBD |
-| High-ratio ZIP with declared expansion above budget | Rejected before entry inflation | Root-reported regression pass; final suite TBD |
-| `../` or absolute archive path | Rejected | TBD |
-| Duplicate normalized archive path | Rejected | TBD |
-| Duplicate CSV header | Rejected instead of silently renamed | TBD |
-| Invalid UTF-8 | Explicit parse error | TBD |
-| More than 500 rows/100 columns/2,000 characters per cell | Explicit bounded parse error | TBD |
-| JSON deeper than 10 or above 25,000 nodes | Explicit bounded parse error | TBD |
-| Attachment in ZIP | Local SHA-256 and byte length recorded | TBD |
-| Malformed CSV/JSON | Explicit parse error, never empty success | TBD |
-| Wrong content type | API rejects request | TBD |
-| Wrong origin in production | API rejects request | TBD |
-| Extra schema keys | Strict validation rejects request/output | TBD |
-| Body over 256 KiB, with or without `Content-Length` | API returns `413` before model call | TBD |
-| Invalid UTF-8 or JSON | API returns sanitized `400` error | TBD |
-| More than 240 sources | Strict request rejection | TBD |
-| Any caller-supplied `targets` field | Strict request rejection; route still injects exactly 33 application targets | Root-reported targeted test pass; final suite TBD |
-| `EXITCANARY_LIVE_MAPPING_ENABLED=false` | Returns labeled fallback without invoking OpenAI | Root-reported targeted test pass; final suite TBD |
-| Parser cell/path near its maximum | Adapter produces mapper-valid samples/paths without silent semantic corruption | TBD |
+| Valid bounded CSV | Formula-looking cells remain inert strings; no silent coercion | PASS — parser CSV regression |
+| Valid bounded JSON | Parsed within depth and value limits | PASS — parser JSON regression |
+| Valid bounded ZIP | Only supported safe entries are considered | PASS — parser ZIP regression |
+| Unsupported file type | Explicit rejection | PASS — parser format regression |
+| Oversized upload or mapping request | Rejected before parsing/model call | PASS — upload and route byte-limit regressions |
+| Excess ZIP entries/decompressed bytes | Rejected before unsafe extraction | PASS — entry-count and declared-expansion regressions |
+| High-ratio ZIP with declared expansion above budget | Rejected before entry inflation | PASS — compressed-bomb regression |
+| `../`, absolute, or drive archive path | Rejected | PASS — three unsafe-path cases |
+| Duplicate normalized archive path | Rejected | PASS — normalized-path collision regression |
+| Duplicate CSV header | Rejected instead of silently renamed | PASS — duplicate-header regression |
+| Invalid UTF-8 | Explicit parse error | PASS — direct parser and API regressions |
+| More than 500 rows/100 columns/2,000 characters per cell | Explicit bounded parse error | PASS — table-limit regressions |
+| JSON deeper than 10 or above 25,000 nodes | Explicit bounded parse error | PASS — JSON-complexity regressions |
+| Attachment in ZIP | Local SHA-256 and byte length recorded | PASS — safe ZIP and canary-pack regressions |
+| Malformed CSV/JSON | Explicit parse error, never empty success | PASS — malformed-input regressions |
+| Wrong content type | API rejects request | PASS — map/evaluate route regressions |
+| Wrong origin | API rejects request and ignores spoofed forwarding headers | PASS locally; deployed canonical-origin check remains public gate |
+| Extra schema keys | Strict request and model-output validation rejects them | PASS — request, verdict, and model-output regressions |
+| Body over 256 KiB, with or without `Content-Length` | API returns `413` before model call | PASS — advertised and streamed body regressions |
+| Invalid UTF-8 or JSON | API returns sanitized `400` error | PASS — map/evaluate route regressions |
+| More than 240 sources | Strict request rejection | PASS — source-count regression |
+| Any caller-supplied `targets` field | Strict request rejection; route injects exactly 33 application targets | PASS — route and registry regressions |
+| Live flag false or absent | Returns labeled fallback without invoking OpenAI, even if a key is inherited | PASS — fail-closed mapper regressions |
+| Parser cell/path near its maximum | Adapter preserves bounded samples and source paths through confirmation | PASS — parser and long-path bridge regressions |
 | One canonical entity split across source tables | Normalizer returns `split_entity`; evaluation is not called | Targeted regression PASS |
-| Rate limit exceeded | API returns `429`, rate headers, and `Retry-After` | TBD |
-| Mapping dependency throws unexpectedly | API returns sanitized `503` | TBD |
-| `/api/evaluate` body over 512 KiB | API returns `413` before evaluation | TBD |
-| `/api/evaluate` wrong type/origin/schema | API rejects with sanitized error | TBD |
-| Client injects verdict into evaluation request or packet | Strict schema rejects before evaluator runs | TBD |
-| Valid complete evaluation request | Server returns uncached `EXIT_READY` receipt with full digest | TBD |
-| Canary-pack JSON drift | Checked-in public JSON equals the application-owned profile | Current targeted gate passed; final suite TBD |
-| `GET /api/canary-pack` | ZIP has all expected tables, manifest, and exact attachment bytes | Current targeted gate passed; final suite TBD |
-| `GET /api/demo-export?variant=complete` | Generated ZIP traverses parser → normalizer → evaluator and reaches `EXIT_READY` | Current targeted gate passed; final suite TBD |
-| `GET /api/demo-export?variant=flawed` | Generated ZIP traverses the same path and fails exactly six checks | Current targeted gate passed; final suite TBD |
-| Invalid demo-export variant | Returns sanitized `400` JSON | Current targeted gate passed; final suite TBD |
-| Configured production origin | Exact origin accepted; mismatched/malformed origin rejected; forwarded headers ignored | TBD final suite/deployment |
-| Production security headers | HSTS, CSP, frame denial, same-origin resource/opener, and origin-agent headers present | Local production server PASS; deployed-origin rerun TBD |
+| Rate limit exceeded | API returns `429`, rate headers, and `Retry-After` | PASS — route regression |
+| Mapping dependency throws unexpectedly | API returns sanitized `503` | PASS — route regression |
+| `/api/evaluate` body over 512 KiB | API returns `413` before evaluation | PASS — advertised and streamed body regressions |
+| `/api/evaluate` wrong type/origin/schema | API rejects with sanitized error | PASS — evaluation-route regressions |
+| Client injects verdict into evaluation request or packet | Strict schema rejects before evaluator runs | PASS — route and evaluator regressions |
+| Valid complete evaluation request | Server returns uncached `EXIT_READY` receipt with full digest | PASS — evaluation-route regression |
+| Canary-pack JSON drift | Checked-in public JSON equals the application-owned profile | PASS — canary-pack regression |
+| `GET /api/canary-pack` | ZIP has all expected tables, manifest, and exact attachment bytes | PASS — canary-pack regression |
+| `GET /api/demo-export?variant=complete` | Generated ZIP traverses parser → normalizer → evaluator and reaches `EXIT_READY` | PASS — demo-export regression |
+| `GET /api/demo-export?variant=flawed` | Generated ZIP traverses the same path and fails exactly six checks | PASS — demo-export regression |
+| Invalid demo-export variant | Returns sanitized `400` JSON | PASS — demo-export regression |
+| Configured production origin | Exact origin accepted; mismatched/malformed origin rejected; forwarded headers ignored | PASS locally; deployed-origin rerun remains public gate |
+| Production security headers | HSTS, CSP, frame denial, same-origin resource/opener, and origin-agent headers present | PASS on local production server; deployed-origin rerun remains public gate |
 
 ## Live GPT-5.6 Sol smoke test
 
@@ -143,13 +123,15 @@ Run only with a server-only credential and synthetic data.
    deterministic verdict matches the offline expected result.
 10. Remove any local screenshots or logs that contain request data.
 
-Status: **PASS on bounded synthetic evidence in the current worktree.** A
-single-field request returned `mode: "live"` with model `gpt-5.6-sol`. The first
-full 33-field request hit the shorter pre-adjustment timeout and safely returned
-a labeled fallback. After setting the explicit timeout to 30 seconds, the repeat
+Status: **PASS on controlled bounded synthetic evidence.** A single-field
+request returned `mode: "live"` with model `gpt-5.6-sol`. The first full
+33-field request hit the shorter pre-adjustment timeout and safely returned a
+labeled fallback. After setting the explicit timeout to 30 seconds, the repeat
 completed live in about 21.0 seconds with 33 proposals, zero unresolved targets,
-and no warning. The exact recorded/deployed build must still repeat this gate;
-no live-public credential posture is claimed yet.
+and no warning. Commit `bc4d772` did not alter the model request contract; it
+added an explicit fail-closed requirement that the server flag equal `true`.
+The selected public judge deployment is keyless and fallback-only, so no live
+public credential posture is claimed.
 
 The production UI upload lane was also exercised through the isolated in-app
 browser with `acme-crm-export-complete.zip`: the badge showed
@@ -216,6 +198,26 @@ Verify at minimum:
 Use the Codex in-app browser or an isolated Playwright/browser session; do not
 borrow another project's Chrome tab or development server.
 
+Current local production-browser result on the `bc4d772` product source:
+
+- desktop 1440 × 900: PASS, no horizontal overflow, no error overlay, zero
+  warning/error logs;
+- mobile 390 × 844: PASS, no clipped controls or horizontal overflow, 48 px
+  minimum button height;
+- 200% equivalent reflow at 720 × 450: PASS, no clipped controls or horizontal
+  overflow;
+- `prefers-reduced-motion: reduce`: PASS, no meaningful transition or animation
+  above one millisecond;
+- keyboard tab order and Space activation: PASS in `ui-flow.test.tsx`;
+- bundled flawed → complete flow: PASS, exact six-failure/9-pass summaries,
+  visible simulated-fixture disclosure, zero console warnings/errors, and
+  different 64-character digests.
+
+The in-app browser's native file-picker bridge did not return a chooser during
+this final pass. That interaction is covered on the current source by the
+checked-in ZIP integration suites and was previously exercised through the
+actual upload UI; the deployed signed-out upload remains a public gate.
+
 ## Security verification
 
 ```bash
@@ -238,17 +240,19 @@ Never paste a real secret into a report.
 
 ## Submission validation record
 
-Complete this only after the final run.
+This record covers the final local product gate. Public provider and account
+checks are recorded separately after publication.
 
 ```text
-Source commit: 5e463be7ced72b36f5dbd8bdbcb51ea7a94203c1
-Validation time (UTC): 2026-07-20T22:15:43Z
+Source product commit: bc4d772
+Validation time (UTC): 2026-07-20T23:25:12Z
 Node: v22.22.2
 pnpm: 10.33.2
 
 pnpm lint: PASS via pnpm verify
 pnpm typecheck: PASS via pnpm verify
-pnpm test: PASS - 11 files, 60 tests
+pnpm test: PASS - 12 Vitest files, 82 tests
+pnpm test:public-preflight: PASS - 5 tests
 pnpm build: PASS - production routes generated
 pnpm audit:prod: PASS - no known vulnerabilities
 pnpm verify: PASS
@@ -258,8 +262,13 @@ Flawed fixture verdict: PASS - NOT_EXIT_READY, 6 fail / 3 pass
 Complete fixture verdict: PASS - EXIT_READY, 9 pass / 0 fail
 Desktop browser QA: PASS at 1440x900; no overflow
 Mobile browser QA: PASS at 390x844; 48px minimum CTA, no overflow
+200% equivalent reflow: PASS at 720x450; no overflow or clipped controls
+Reduced motion: PASS - no meaningful transition/animation above 1ms
+Keyboard flow: PASS - tab order and Space activation regression
 Console errors: PASS - 0 warnings / 0 errors after bundled and real-upload flows
 Secret scan: PASS - ignored .env.local; no key-shaped value in tracked source
+Fallback-only API smoke: PASS - mode fallback, model null, no verdict, live disabled
+Public fallback preflight: PASS with synthetic canonical HTTPS environment
 
 Local demo video: PASS - 93.000s, 1920x1080 H.264/yuv420p/30fps,
 AAC 48kHz stereo, -16.01 LUFS, -4.50 dBTP, 0 decode errors, no trimmed speech
@@ -268,9 +277,10 @@ Video SHA-256: 5c354bea113fbf59269b9f4c1365a55efa89e308b30df9dbb466f94f4e180204
 Video privacy/claims audit: PASS - synthetic data only; live/bundled/simulated
 states separated; AI voice disclosed; no secret or account identifier found
 
-Skipped checks: deployed public URL, public-video playback, 200% zoom, and the
-deployed-origin quota/auth posture remain submission gates.
+Skipped checks: deployed public URL, effective provider environment, signed-out
+judge upload, and public-video playback remain submission gates.
 Residual risk accepted for submission: receipt binds self-supplied normalized
-evidence rather than attesting vendor origin; process-local model rate limiting
-is not sufficient for a public paid endpoint.
+evidence rather than attesting vendor origin. The public judge posture therefore
+ships no API key and disables live mapping; process-local model rate limiting is
+not sufficient for a public paid endpoint.
 ```
