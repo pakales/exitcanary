@@ -1,0 +1,78 @@
+{
+  "version": "crm-exit-canary@1.0.0",
+  "name": "ExitCanary bounded CRM canary",
+  "tables": {
+    "companies": [
+      {
+        "id": "company_canary_001",
+        "name": "Žalias Debesis, UAB",
+        "domain": "zalias-debesis.example"
+      }
+    ],
+    "contacts": [
+      {
+        "id": "contact_canary_001",
+        "companyId": "company_canary_001",
+        "firstName": "Živilė",
+        "lastName": "Nuñez",
+        "email": "zivile.nunez@zalias-debesis.example"
+      }
+    ],
+    "deals": [
+      {
+        "id": "deal_canary_001",
+        "companyId": "company_canary_001",
+        "primaryContactId": "contact_canary_001",
+        "name": "Exit renewal — 東京",
+        "stage": "contract_review",
+        "amountMinor": 275000,
+        "currency": "EUR"
+      }
+    ],
+    "activities": [
+      {
+        "id": "activity_canary_001",
+        "companyId": "company_canary_001",
+        "contactId": "contact_canary_001",
+        "dealId": "deal_canary_001",
+        "type": "deal_stage_changed",
+        "subject": "Canary handoff – résumé",
+        "occurredAt": "2026-07-18T09:42:31.000Z",
+        "history": [
+          {
+            "sequence": 1,
+            "field": "stage",
+            "previousValue": "qualified",
+            "newValue": "proposal",
+            "changedAt": "2026-07-18T09:30:00.000Z"
+          },
+          {
+            "sequence": 2,
+            "field": "stage",
+            "previousValue": "proposal",
+            "newValue": "contract_review",
+            "changedAt": "2026-07-18T09:42:31.000Z"
+          }
+        ]
+      }
+    ],
+    "customFields": [
+      {
+        "entityType": "deal",
+        "entityId": "deal_canary_001",
+        "key": "renewal_owner",
+        "value": "Rūta Šimkutė · 東京"
+      }
+    ],
+    "attachments": [
+      {
+        "id": "attachment_canary_001",
+        "dealId": "deal_canary_001",
+        "fileName": "exit-canary–sutartis.txt",
+        "mimeType": "text/plain",
+        "sizeBytes": 35,
+        "sha256": "f2527ea2050b66c32e29b771d90640fbdec1c6fb0977c48578c5063a8be3117c"
+      }
+    ]
+  }
+}

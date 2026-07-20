@@ -1,0 +1,20 @@
+[
+  {
+    "id": "activity_canary_001",
+    "company_id": "company_canary_001",
+    "contact_id": "contact_canary_001",
+    "deal_id": "deal_canary_001",
+    "type": "deal_stage_changed",
+    "subject": "Canary handoff – résumé",
+    "occurred_at": "2026-07-18T09:42:00.000Z",
+    "history": [
+      {
+        "sequence": 1,
+        "field": "stage",
+        "previousValue": "qualified",
+        "newValue": "proposal",
+        "changedAt": "2026-07-18T09:30:00.000Z"
+      }
+    ]
+  }
+]

@@ -1,0 +1,2 @@
+id,company_id,primary_contact_id,name,stage,amount_minor,currency
+deal_canary_001,company_canary_001,contact_missing_999,Exit renewal — 東京,contract_review,275000,EUR
