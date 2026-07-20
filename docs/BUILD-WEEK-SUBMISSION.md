@@ -176,7 +176,7 @@ unclear product experience or unsupported impact claim.
 
 | Criterion | What the submission should show | Gate |
 | --- | --- | --- |
-| Technological implementation | Real CSV/JSON/ZIP intake, structured GPT-5.6 mapping, strict authority boundary, deterministic checks, tests | Current worktree: `pnpm verify` passed 11 files / 60 tests plus build/audit; final-commit rerun TBD |
+| Technological implementation | Real CSV/JSON/ZIP intake, structured GPT-5.6 mapping, strict authority boundary, deterministic checks, tests | Product commit `5e463be` passed `pnpm verify`: 11 files / 60 tests plus build/audit |
 | Design | Coherent 60–90s start-to-verdict flow, clear exit-door metaphor, accessible desktop/mobile UI | Production browser QA passed at 1440×900 and 390×844; screenshots captured; final deployed-origin rerun TBD |
 | Potential impact | Named buyer and buying/renewal moment; exact failures the product exposes | Draft complete; validate demo evidence |
 | Quality of idea | Executable pre-purchase exit drill positioned against adjacent checklists, migration, and cloud-exit tools | Draft complete; avoid novelty overclaim |
@@ -196,38 +196,38 @@ seed-export-compare loop before purchase or renewal.
 
 ## Required submission gates
 
-- [ ] Re-read the current Devpost rules and eligibility requirements.
+- [x] Re-read the current Devpost rules and eligibility requirements.
 - [ ] Confirm the entrant/team/organization is eligible and, if applicable, has
       an authorized representative.
-- [ ] Preserve evidence that this project was newly created during the July
+- [x] Preserve evidence that this project was newly created during the July
       13–21 submission period; otherwise document only the meaningful extension
       made with Codex/GPT-5.6 after the period opened, using dated commits and
       session evidence.
-- [ ] Confirm the project is entered under **Work & Productivity**.
-- [ ] Confirm a working project built with Codex and GPT-5.6.
+- [x] Confirm the project is entered under **Work & Productivity**.
+- [x] Confirm a working project built with Codex and GPT-5.6.
 - [ ] Confirm the running project functions exactly as the video and submission
       text depict.
-- [ ] Run and record `pnpm verify` on the final commit.
-- [ ] Run the live GPT-5.6 Sol synthetic-data smoke test.
+- [x] Run and record `pnpm verify` on the local product commit.
+- [x] Run the live GPT-5.6 Sol synthetic-data smoke test.
 - [ ] Choose and document the public credential posture: verified durable
       quota/auth/kill switch for live GPT, or an explicitly fallback-only judge
       deployment with the live synthetic smoke demonstrated separately.
-- [ ] Verify the no-key/failure fallback is transparent and safe.
+- [x] Verify the no-key/failure fallback is transparent and safe.
 - [ ] Verify the UI and video clearly distinguish live, fallback, and bundled
       pre-mapped modes, including the explicit GPT consent gate.
-- [ ] Verify flawed → not ready/review, complete → ready, and digest change.
-- [ ] Verify the receipt disclaimer is visible beside the digest.
-- [ ] Verify both `/api/demo-export` variants download and traverse the real
+- [x] Verify flawed → not ready/review, complete → ready, and digest change.
+- [x] Verify the receipt disclaimer is visible beside the digest.
+- [x] Verify both `/api/demo-export` variants download and traverse the real
       parser/normalizer/evaluator lane.
 - [ ] Pin and verify `EXITCANARY_PUBLIC_ORIGIN` on the deployed canonical URL.
-- [ ] Exercise `EXITCANARY_LIVE_MAPPING_ENABLED=false` and confirm no model call
+- [x] Exercise `EXITCANARY_LIVE_MAPPING_ENABLED=false` and confirm no model call
       occurs.
 - [ ] Verify desktop/mobile/keyboard/reduced-motion behavior and zero console errors.
 - [ ] Provide a free working demo/test URL and test its full judge path while
       logged out in a clean browser session.
 - [ ] Scan repository, client bundle, video, and screenshots for secrets/private data.
 - [ ] Confirm the repository URL is accessible to judges.
-- [ ] Confirm MIT license, README setup, Codex collaboration story, and sample
+- [x] Confirm MIT license, README setup, Codex collaboration story, and sample
       data are present whether the judging repository is public or private.
 - [ ] If private, share repository access with `testing@devpost.com` and
       `build-week-event@openai.com`, then verify the invitations.

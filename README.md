@@ -163,11 +163,11 @@ pnpm audit:prod
 pnpm verify
 ```
 
-`pnpm verify` is the repository gate. The root build session reported a pass on
-the current pre-final worktree: lint, typecheck, 11 test files / 60 tests,
-production build, and production audit all passed. The repository still needs a
-final commit and a fresh gate tied to that commit before submission. The full
-manual and automated matrix is in [docs/TESTING.md](docs/TESTING.md).
+`pnpm verify` is the repository gate. The root build session ran it successfully
+against local product commit `5e463be7ced72b36f5dbd8bdbcb51ea7a94203c1`:
+lint, typecheck, 11 test files / 60 tests, production build, and production
+audit all passed. The full manual and automated matrix is in
+[docs/TESTING.md](docs/TESTING.md).
 
 The bounded synthetic live-mapping smoke also passed on this worktree after the
 explicit timeout was set to 30 seconds: `gpt-5.6-sol` returned 33 proposals,

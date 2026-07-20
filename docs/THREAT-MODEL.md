@@ -71,7 +71,7 @@ connections, shared workspaces, scheduled tests, or arbitrary document formats.
 | Client-computed or injected verdict | False authority | UI calls server `/api/evaluate`; strict request has no verdict; server returns verdict and digest | Implemented in source; final integration TBD |
 | Digest described as proof/signature | Misleading assurance | Explicit disclaimer beside the on-screen receipt and in documentation | Current production browser gate passed; deployed-origin rerun TBD |
 | Cross-site framing or mixed-content downgrade | UI deception or transport downgrade | Frame denial, same-origin resource/opener policy, HSTS, CSP upgrade-insecure requests | Implemented in production config; deployed-header test TBD |
-| Dependency or build compromise | Secret/data exposure | Lockfile, production audit, minimal dependencies, review build output | PostCSS pinned to 8.5.20; current full verify/build/audit passed; final-commit rerun TBD |
+| Dependency or build compromise | Secret/data exposure | Lockfile, production audit, minimal dependencies, review build output | PostCSS pinned to 8.5.20; product commit `5e463be` passed full verify/build/audit |
 
 The browser parser currently caps uploads at 2 MiB; bounds archive entries,
 declared and actual expanded bytes, entry bytes, and paths; rejects duplicate

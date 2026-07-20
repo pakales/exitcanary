@@ -46,14 +46,13 @@ pnpm exec vitest run tests/end-to-end-artifacts.test.ts \
 Result: **3 test files passed, 7 tests passed**. This verifies both checked-in
 ZIPs, both generated demo-export variants, invalid-variant rejection, public
 canary JSON drift, and generated canary ZIP contents on that worktree state. It
-still has no final commit SHA and does not replace `pnpm verify`.
+is also covered by the repository-wide commit-bound `pnpm verify` below.
 
-The root build session subsequently ran the full repository gate on the current
-worktree: **`pnpm verify` passed**, including lint, typecheck, 11 test files / 60
-tests, production build, and production dependency audit. Local tool versions
-observed after that report are Node `v22.22.2` and pnpm `10.33.2`. The repository
-still has no commit, so this is strong pre-final evidence, not the required
-final-commit record.
+The root build session subsequently ran the full repository gate against local
+product commit `5e463be7ced72b36f5dbd8bdbcb51ea7a94203c1`:
+**`pnpm verify` passed**, including lint, typecheck, 11 test files / 60 tests,
+production build, and production dependency audit. Tool versions were Node
+`v22.22.2` and pnpm `10.33.2`.
 
 ## Deterministic test matrix
 
@@ -242,26 +241,29 @@ Never paste a real secret into a report.
 Complete this only after the final run.
 
 ```text
-Source commit: TBD
-Validation time (UTC): TBD
-Node: TBD
-pnpm: TBD
+Source commit: 5e463be7ced72b36f5dbd8bdbcb51ea7a94203c1
+Validation time (UTC): 2026-07-20T22:15:43Z
+Node: v22.22.2
+pnpm: 10.33.2
 
-pnpm lint: TBD
-pnpm typecheck: TBD
-pnpm test: TBD
-pnpm build: TBD
-pnpm audit:prod: TBD
-pnpm verify: TBD
+pnpm lint: PASS via pnpm verify
+pnpm typecheck: PASS via pnpm verify
+pnpm test: PASS - 11 files, 60 tests
+pnpm build: PASS - production routes generated
+pnpm audit:prod: PASS - no known vulnerabilities
+pnpm verify: PASS
 
-Live GPT-5.6 Sol smoke: TBD
-Flawed fixture verdict: TBD
-Complete fixture verdict: TBD
-Desktop browser QA: current production build PASS at 1440x900; no overflow
-Mobile browser QA: current production build PASS at 390x844; 48px minimum CTA, no overflow
-Console errors: 0 warnings / 0 errors after bundled and real-upload flows
-Secret scan: TBD
+Live GPT-5.6 Sol smoke: PASS - exact model, 33 proposals, 0 unresolved, about 21s
+Flawed fixture verdict: PASS - NOT_EXIT_READY, 6 fail / 3 pass
+Complete fixture verdict: PASS - EXIT_READY, 9 pass / 0 fail
+Desktop browser QA: PASS at 1440x900; no overflow
+Mobile browser QA: PASS at 390x844; 48px minimum CTA, no overflow
+Console errors: PASS - 0 warnings / 0 errors after bundled and real-upload flows
+Secret scan: PASS - ignored .env.local; no key-shaped value in tracked source
 
-Skipped checks: TBD
-Residual risk accepted for submission: TBD
+Skipped checks: deployed public URL, public-video playback, 200% zoom, and the
+deployed-origin quota/auth posture remain submission gates.
+Residual risk accepted for submission: receipt binds self-supplied normalized
+evidence rather than attesting vendor origin; process-local model rate limiting
+is not sufficient for a public paid endpoint.
 ```

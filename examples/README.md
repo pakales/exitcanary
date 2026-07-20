@@ -44,8 +44,8 @@ it with the fixed 33-field mapping, and evaluates it. On the 2026-07-21
 worktree, the documentation workstream re-ran this test together with the
 canary/demo download-route tests: 3 files and 7 tests passed. The complete ZIP
 produced `EXIT_READY` with nine passes and the flawed ZIP produced
-`NOT_EXIT_READY` with six failures. This targeted evidence has no final commit
-SHA and does not replace the repository-wide verification record.
+`NOT_EXIT_READY` with six failures. The repository-wide verification record is
+bound to local product commit `5e463be7ced72b36f5dbd8bdbcb51ea7a94203c1`.
 
 Use **Use my export** to exercise the parser and live/fallback mapper path. The
 separate **Run pre-mapped flawed demo** button uses an in-app normalized fixture
