@@ -124,14 +124,16 @@ export async function mapExportSemantics(
     targets: parsedTargets,
   };
 
+  const liveMappingEnabled =
+    process.env.EXITCANARY_LIVE_MAPPING_ENABLED?.trim().toLowerCase() === "true";
+  if (!liveMappingEnabled) {
+    return fallbackResponse(normalizedInput, "live_mapping_disabled");
+  }
   const apiKey =
     dependencies.apiKey === undefined
       ? process.env.OPENAI_API_KEY?.trim()
       : dependencies.apiKey?.trim();
   if (!apiKey) return fallbackResponse(normalizedInput, "missing_api_key");
-  if (process.env.EXITCANARY_LIVE_MAPPING_ENABLED?.trim().toLowerCase() === "false") {
-    return fallbackResponse(normalizedInput, "live_mapping_disabled");
-  }
 
   try {
     const client = dependencies.client ?? createClient(apiKey);

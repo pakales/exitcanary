@@ -2,6 +2,7 @@ import JSZip from "jszip";
 import { describe, expect, it } from "vitest";
 
 import {
+  EXPORT_LIMITS,
   packetToSourceEvidence,
   parseExportFile,
 } from "@/lib/export-parser";
@@ -9,7 +10,9 @@ import {
 describe("bounded export parser", () => {
   it("parses CSV and produces bounded semantic evidence", async () => {
     const file = new File(
-      ["contact_id,email,city\nc-1,ada@example.test,Žirmūnai\n"],
+      [
+        "contact_id,email,city,note\nc-1,ada@example.test,Žirmūnai,=1+1\n",
+      ],
       "contacts.csv",
       { type: "text/csv" },
     );
@@ -19,6 +22,7 @@ describe("bounded export parser", () => {
     expect(packet.tables[0]?.rows[0]).toMatchObject({
       contact_id: "c-1",
       city: "Žirmūnai",
+      note: "=1+1",
     });
     expect(packetToSourceEvidence(packet)).toContainEqual(
       expect.objectContaining({
@@ -62,9 +66,11 @@ describe("bounded export parser", () => {
     expect(packet.attachments[0]?.sha256).toMatch(/^[a-f0-9]{64}$/);
   });
 
-  it("rejects traversal paths before extraction", async () => {
+  it.each(["../escape.csv", "/absolute.csv", "C:/drive.csv"])(
+    "rejects unsafe archive path %s before extraction",
+    async (path) => {
     const archive = new JSZip();
-    archive.file("../escape.csv", "id\n1\n");
+    archive.file(path, "id\n1\n");
     const bytes = await archive.generateAsync({ type: "uint8array" });
 
     await expect(
@@ -74,7 +80,8 @@ describe("bounded export parser", () => {
         }),
       ),
     ).rejects.toMatchObject({ code: "unsafe_archive_path" });
-  });
+    },
+  );
 
   it("rejects a high-ratio ZIP before inflating entries beyond the budget", async () => {
     const archive = new JSZip();
@@ -100,6 +107,145 @@ describe("bounded export parser", () => {
     await expect(parseExportFile(file)).rejects.toMatchObject({
       code: "invalid_csv",
     });
+  });
+
+  it("rejects malformed CSV instead of returning partial records", async () => {
+    const file = new File(['id,name\n1,"unterminated'], "malformed.csv", {
+      type: "text/csv",
+    });
+
+    await expect(parseExportFile(file)).rejects.toMatchObject({
+      code: "invalid_csv",
+    });
+  });
+
+  it("rejects malformed JSON and invalid UTF-8 text", async () => {
+    await expect(
+      parseExportFile(
+        new File(['{"contacts":[}'], "malformed.json", {
+          type: "application/json",
+        }),
+      ),
+    ).rejects.toMatchObject({ code: "invalid_json" });
+
+    const invalidUtf8 = Uint8Array.from([0x69, 0x64, 0x0a, 0xc3, 0x28]);
+    await expect(
+      parseExportFile(
+        new File([invalidUtf8.buffer], "invalid-utf8.csv", {
+          type: "text/csv",
+        }),
+      ),
+    ).rejects.toMatchObject({ code: "invalid_text" });
+  });
+
+  it("enforces the direct upload byte limit before parsing", async () => {
+    const oversized = new Uint8Array(EXPORT_LIMITS.uploadBytes + 1);
+
+    await expect(
+      parseExportFile(
+        new File([oversized.buffer], "oversized.csv", { type: "text/csv" }),
+      ),
+    ).rejects.toMatchObject({ code: "upload_too_large" });
+  });
+
+  it("enforces table row, column, and cell bounds", async () => {
+    const tooManyRows = [
+      "id,value",
+      ...Array.from(
+        { length: EXPORT_LIMITS.rowsPerTable + 1 },
+        (_, index) => `${index},x`,
+      ),
+    ].join("\n");
+    await expect(
+      parseExportFile(new File([tooManyRows], "rows.csv", { type: "text/csv" })),
+    ).rejects.toMatchObject({ code: "table_limit" });
+
+    const tooManyColumns = Array.from(
+      { length: EXPORT_LIMITS.columnsPerTable + 1 },
+      (_, index) => `field_${index}`,
+    );
+    await expect(
+      parseExportFile(
+        new File(
+          [`${tooManyColumns.join(",")}\n${tooManyColumns.map(() => "x").join(",")}\n`],
+          "columns.csv",
+          { type: "text/csv" },
+        ),
+      ),
+    ).rejects.toMatchObject({ code: "table_limit" });
+
+    await expect(
+      parseExportFile(
+        new File(
+          [`id,value\n1,${"x".repeat(EXPORT_LIMITS.cellCharacters + 1)}\n`],
+          "cell.csv",
+          { type: "text/csv" },
+        ),
+      ),
+    ).rejects.toMatchObject({ code: "table_limit" });
+  });
+
+  it("enforces JSON depth and total-node complexity bounds", async () => {
+    let deeplyNested: unknown = "leaf";
+    for (let index = 0; index <= EXPORT_LIMITS.jsonDepth; index += 1) {
+      deeplyNested = { [`level_${index}`]: deeplyNested };
+    }
+    await expect(
+      parseExportFile(
+        new File([JSON.stringify(deeplyNested)], "deep.json", {
+          type: "application/json",
+        }),
+      ),
+    ).rejects.toMatchObject({ code: "json_limit" });
+
+    const highNodeCount = {
+      records: Array.from({ length: EXPORT_LIMITS.rowsPerTable }, (_, row) =>
+        Object.fromEntries(
+          Array.from({ length: 50 }, (__, column) => [
+            `field_${column}`,
+            row * 50 + column,
+          ]),
+        ),
+      ),
+    };
+    await expect(
+      parseExportFile(
+        new File([JSON.stringify(highNodeCount)], "complex.json", {
+          type: "application/json",
+        }),
+      ),
+    ).rejects.toMatchObject({ code: "json_limit" });
+  });
+
+  it("rejects normalized duplicate ZIP paths", async () => {
+    const archive = new JSZip();
+    archive.file("records\\contacts.csv", "id\n1\n");
+    archive.file("records/contacts.csv", "id\n2\n");
+    const bytes = await archive.generateAsync({ type: "uint8array" });
+
+    await expect(
+      parseExportFile(
+        new File([bytes.slice().buffer as ArrayBuffer], "duplicates.zip", {
+          type: "application/zip",
+        }),
+      ),
+    ).rejects.toMatchObject({ code: "unsafe_archive_path" });
+  });
+
+  it("rejects ZIP archives above the entry-count limit", async () => {
+    const archive = new JSZip();
+    for (let index = 0; index <= EXPORT_LIMITS.archiveEntries; index += 1) {
+      archive.file(`attachments/${index}.txt`, "x");
+    }
+    const bytes = await archive.generateAsync({ type: "uint8array" });
+
+    await expect(
+      parseExportFile(
+        new File([bytes.slice().buffer as ArrayBuffer], "too-many-files.zip", {
+          type: "application/zip",
+        }),
+      ),
+    ).rejects.toMatchObject({ code: "archive_limit" });
   });
 
   it("rejects unsupported formats", async () => {

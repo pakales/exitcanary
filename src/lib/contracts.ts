@@ -193,7 +193,7 @@ export type MappingConfirmation = z.infer<typeof MappingConfirmationSchema>;
 
 export const MappingCandidateSchema = z
   .object({
-    sourceTable: z.string().min(1).max(120),
+    sourceTable: BoundedPathSchema,
     sourceField: z.string().min(1).max(160),
     evidencePath: BoundedPathSchema,
   })
@@ -204,7 +204,7 @@ export const FieldMappingSchema = z
   .object({
     canonicalField: CanonicalFieldSchema,
     confirmation: MappingConfirmationSchema,
-    sourceTable: z.string().min(1).max(120).nullable(),
+    sourceTable: BoundedPathSchema.nullable(),
     sourceField: z.string().min(1).max(160).nullable(),
     evidencePaths: z.array(BoundedPathSchema).max(8),
     candidates: z.array(MappingCandidateSchema).max(8),

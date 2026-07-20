@@ -180,6 +180,49 @@ describe("POST /api/map security boundary", () => {
     expect(deps.mapSemantics).not.toHaveBeenCalled();
   });
 
+  it("rejects malformed JSON and invalid UTF-8 request bodies", async () => {
+    const malformedDeps = dependencies();
+    const malformedResponse = await handleMapRequest(
+      new Request("https://exitcanary.test/api/map", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: "https://exitcanary.test",
+        },
+        body: '{"requestId":',
+      }),
+      malformedDeps,
+    );
+
+    expect(malformedResponse.status).toBe(400);
+    expect(await malformedResponse.json()).toMatchObject({
+      error: { code: "invalid_json" },
+    });
+    expect(malformedDeps.mapSemantics).not.toHaveBeenCalled();
+
+    const invalidUtf8Deps = dependencies();
+    const invalidUtf8 = Uint8Array.from([
+      0x7b, 0x22, 0x61, 0x22, 0x3a, 0x22, 0xc3, 0x28, 0x22, 0x7d,
+    ]);
+    const invalidUtf8Response = await handleMapRequest(
+      new Request("https://exitcanary.test/api/map", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: "https://exitcanary.test",
+        },
+        body: invalidUtf8.buffer,
+      }),
+      invalidUtf8Deps,
+    );
+
+    expect(invalidUtf8Response.status).toBe(400);
+    expect(await invalidUtf8Response.json()).toMatchObject({
+      error: { code: "invalid_body" },
+    });
+    expect(invalidUtf8Deps.mapSemantics).not.toHaveBeenCalled();
+  });
+
   it("uses a strict request schema", async () => {
     const deps = dependencies();
     const response = await handleMapRequest(
@@ -192,6 +235,57 @@ describe("POST /api/map security boundary", () => {
       error: { code: "invalid_request" },
     });
     expect(deps.mapSemantics).not.toHaveBeenCalled();
+  });
+
+  it("rejects more than 240 source fields", async () => {
+    const deps = dependencies();
+    const response = await handleMapRequest(
+      jsonRequest({
+        ...validPayload,
+        sources: Array.from({ length: 241 }, (_, index) => ({
+          sourceFile: "contacts.csv",
+          sourceField: `field_${index}`,
+          evidencePath: `/contacts.csv/fields/field_${index}`,
+          sampleValues: [String(index)],
+        })),
+      }),
+      deps,
+    );
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({
+      error: { code: "invalid_request" },
+    });
+    expect(deps.mapSemantics).not.toHaveBeenCalled();
+  });
+
+  it("pins browser calls to the configured exact public origin", async () => {
+    const originalOrigin = process.env.EXITCANARY_PUBLIC_ORIGIN;
+    process.env.EXITCANARY_PUBLIC_ORIGIN = "https://public.exitcanary.test";
+
+    try {
+      const acceptedDeps = dependencies();
+      const accepted = await handleMapRequest(
+        jsonRequest(validPayload, { origin: "https://public.exitcanary.test" }),
+        acceptedDeps,
+      );
+      expect(accepted.status).toBe(200);
+      expect(acceptedDeps.mapSemantics).toHaveBeenCalledOnce();
+
+      const rejectedDeps = dependencies();
+      const rejected = await handleMapRequest(
+        jsonRequest(validPayload, { origin: "https://exitcanary.test" }),
+        rejectedDeps,
+      );
+      expect(rejected.status).toBe(403);
+      expect(rejectedDeps.mapSemantics).not.toHaveBeenCalled();
+    } finally {
+      if (originalOrigin === undefined) {
+        delete process.env.EXITCANARY_PUBLIC_ORIGIN;
+      } else {
+        process.env.EXITCANARY_PUBLIC_ORIGIN = originalOrigin;
+      }
+    }
   });
 
   it("rejects caller-supplied target registries", async () => {
@@ -282,7 +376,9 @@ describe("POST /api/map security boundary", () => {
 
   it("wires the production handler to an honest missing-key fallback", async () => {
     const originalKey = process.env.OPENAI_API_KEY;
+    const originalLiveFlag = process.env.EXITCANARY_LIVE_MAPPING_ENABLED;
     delete process.env.OPENAI_API_KEY;
+    process.env.EXITCANARY_LIVE_MAPPING_ENABLED = "true";
 
     try {
       const response = await POST(
@@ -303,6 +399,11 @@ describe("POST /api/map security boundary", () => {
     } finally {
       if (originalKey === undefined) delete process.env.OPENAI_API_KEY;
       else process.env.OPENAI_API_KEY = originalKey;
+      if (originalLiveFlag === undefined) {
+        delete process.env.EXITCANARY_LIVE_MAPPING_ENABLED;
+      } else {
+        process.env.EXITCANARY_LIVE_MAPPING_ENABLED = originalLiveFlag;
+      }
     }
   });
 

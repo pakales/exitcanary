@@ -16,6 +16,7 @@ import {
 import {
   DIGEST_DISCLAIMER,
   evaluateExitReadiness,
+  stableSerialize,
 } from "../src/lib/evaluator";
 import {
   COMPLETE_NORMALIZED_EXPORT,
@@ -265,6 +266,22 @@ describe("deterministic exit-readiness evaluator", () => {
     expect(mappingReceipt.digest).not.toBe(first.digest);
   });
 
+  it("canonicalizes property order before digesting equivalent data", () => {
+    expect(
+      stableSerialize({
+        zeta: 3,
+        nested: { second: true, first: "value" },
+        alpha: 1,
+      }),
+    ).toBe(
+      stableSerialize({
+        alpha: 1,
+        nested: { first: "value", second: true },
+        zeta: 3,
+      }),
+    );
+  });
+
   it("rejects a client-supplied verdict instead of granting it authority", async () => {
     const inputWithVerdict = {
       packet: COMPLETE_NORMALIZED_EXPORT,
@@ -275,6 +292,10 @@ describe("deterministic exit-readiness evaluator", () => {
       ...COMPLETE_NORMALIZED_EXPORT,
       verdict: "EXIT_READY",
     };
+    const packetWithClientChecks = {
+      ...COMPLETE_NORMALIZED_EXPORT,
+      checks: [{ id: "client.ready", required: false }],
+    };
 
     expect(EvaluationRequestSchema.safeParse(inputWithVerdict).success).toBe(
       false,
@@ -282,6 +303,9 @@ describe("deterministic exit-readiness evaluator", () => {
     expect(NormalizedCrmExportSchema.safeParse(packetWithVerdict).success).toBe(
       false,
     );
+    expect(
+      NormalizedCrmExportSchema.safeParse(packetWithClientChecks).success,
+    ).toBe(false);
     await expect(
       evaluateExitReadiness(inputWithVerdict as unknown as EvaluationRequest),
     ).rejects.toThrow();

@@ -60,4 +60,38 @@ describe("canonical semantic target adapter", () => {
       ]),
     );
   });
+
+  it("preserves parser-valid source paths through the confirmation bridge", () => {
+    const target = CANONICAL_MAPPING_TARGETS[0]!;
+    const sourceFile = `${"nested/".repeat(24)}companies.csv`;
+    expect(sourceFile.length).toBeGreaterThan(120);
+    expect(sourceFile.length).toBeLessThanOrEqual(360);
+
+    const mapping = mappingSetFromProposal(
+      {
+        mode: "fallback",
+        model: null,
+        proposedMapping: [
+          {
+            sourceFile,
+            sourceField: "company_id",
+            canonicalEntity: target.canonicalEntity,
+            canonicalField: target.canonicalField,
+            evidencePaths: [`${sourceFile}#/company_id`],
+            confidence: 1,
+            rationale: "Exact normalized header match.",
+          },
+        ],
+        unresolved: [],
+        summary: "One bounded proposal.",
+        warning: "Deterministic fallback was used.",
+      },
+      { mappingId: "mapping-long-path-001", confirmProposals: true },
+    );
+
+    expect(mapping.mappings[0]).toMatchObject({
+      confirmation: "confirmed",
+      sourceTable: sourceFile,
+    });
+  });
 });

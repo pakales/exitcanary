@@ -22,8 +22,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:public-preflight": "node --test tests/public-fallback-preflight.test.mjs",
     "audit:prod": "pnpm audit --prod --audit-level=high",
-    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm audit:prod"
+    "preflight:public-fallback": "node scripts/public-fallback-preflight.mjs",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm test:public-preflight && pnpm build && pnpm audit:prod"
   },
   "dependencies": {
     "jszip": "^3.10.1",

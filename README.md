@@ -85,6 +85,12 @@ force a labeled deterministic fallback. Do not expose a public live key behind
 only the process-local limiter: durable identity/quota, abuse monitoring, and an
 operational kill switch are pre-public gates.
 
+The selected Build Week public posture is a keyless, fallback-only judge URL.
+Its fail-closed environment check and signed-out verification procedure are in
+[docs/PUBLIC-DEMO-DEPLOYMENT.md](docs/PUBLIC-DEMO-DEPLOYMENT.md). Run
+`pnpm preflight:public-fallback` with the exact planned production environment
+before any public deployment.
+
 Never expose the key through a `NEXT_PUBLIC_` variable. The no-key path for a
 real upload defaults to local deterministic exact-alias mapping unless the user
 explicitly consents to the GPT path. The bundled judge demo is separate: it
@@ -211,6 +217,7 @@ model prompts, request handling, persistence, or receipt generation.
 - [Evidence contract](docs/EVIDENCE-CONTRACT.md)
 - [Threat model](docs/THREAT-MODEL.md)
 - [Testing](docs/TESTING.md)
+- [Public judge deployment](docs/PUBLIC-DEMO-DEPLOYMENT.md)
 - [Demo script](docs/DEMO-SCRIPT.md)
 - [Build Week submission draft](docs/BUILD-WEEK-SUBMISSION.md)
 - [Public sample data](examples/README.md)
