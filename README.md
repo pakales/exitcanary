@@ -2,6 +2,14 @@
 
 > Before you enter, prove you can leave.
 
+[Live demo](https://exitcanary.vercel.app) ·
+[Demo video](https://youtu.be/-x6M4nCIX3k) ·
+[Devpost](https://devpost.com/software/exitcanary) ·
+[EV1 Labs](https://ev1labs.com/)
+
+Built by [EV1 Labs](https://ev1labs.com/) as part of the
+[Build Week 2026 collection](https://ev1labs.com/labs/build-week-2026/).
+
 ExitCanary is a bounded SaaS exit-readiness prototype. It places a known,
 synthetic CRM dataset inside a trial account, examines the vendor's exported
 CSV, JSON, or ZIP packet, and produces a reproducible verdict about what

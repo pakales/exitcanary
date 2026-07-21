@@ -91,6 +91,16 @@ describe("ExitCanary human confirmation flow", () => {
     expect(
       screen.getByRole("link", { name: /Complete sample ZIP/i }),
     ).toHaveAttribute("href", "/api/demo-export?variant=complete");
+    expect(screen.getByRole("link", { name: "EV1 Labs" })).toHaveAttribute(
+      "href",
+      "https://ev1labs.com/",
+    );
+    expect(
+      screen.getByRole("link", { name: /Build Week 2026 collection/i }),
+    ).toHaveAttribute(
+      "href",
+      "https://ev1labs.com/labs/build-week-2026/",
+    );
   });
 
   it("requires review and discloses the simulated re-evaluation", async () => {
