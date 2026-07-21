@@ -1,7 +1,7 @@
 # Locked 93-second demo script
 
 Status: **published and signed-out technical playback verified** at
-[youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k). The exact uploaded
+[youtu.be/FWoRiuhg8sY](https://youtu.be/FWoRiuhg8sY). The exact uploaded
 candidate is `exitcanary-build-week-demo-1080p.mp4`, SHA-256
 `0008054d917baa8a08d13cef791cb69f8f1008975c5abf97b8e38028a999477e`,
 size 14,120,268 bytes. Its final SRT SHA-256 is
@@ -120,7 +120,7 @@ split.
       visually distinct.
 - [x] Digest limitation and synthetic voice disclosure are visible.
 - [x] Secret/account-identifier and claim scans pass.
-- [x] Upload to **public YouTube** at `https://youtu.be/-x6M4nCIX3k`; the final
+- [x] Upload to **public YouTube** at `https://youtu.be/FWoRiuhg8sY`; the final
       visibility is Public, not Unlisted.
 - [x] Verify 1080p HD availability, captions, unmuted audio, title, duration,
       crop, description, and EV1 Labs channel identity while signed out.

@@ -3,7 +3,7 @@
 > Before you enter, prove you can leave.
 
 [Live demo](https://exitcanary.vercel.app) ·
-[Demo video](https://youtu.be/-x6M4nCIX3k) ·
+[Demo video](https://youtu.be/FWoRiuhg8sY) ·
 [Devpost](https://devpost.com/software/exitcanary) ·
 [EV1 Labs](https://ev1labs.com/)
 
@@ -169,7 +169,7 @@ The source is public at
 [github.com/pakales/exitcanary](https://github.com/pakales/exitcanary), and the
 bounded public judge smoke passed against the fallback-only deployment. The
 93-second demo is public at
-[youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k). The Build Week entry is
+[youtu.be/FWoRiuhg8sY](https://youtu.be/FWoRiuhg8sY). The Build Week entry is
 submitted at [devpost.com/software/exitcanary](https://devpost.com/software/exitcanary)
 with primary Codex session ID
 `019f813d-fdfb-7e93-8365-783b07ade86f`; signed-out access and the Devpost

@@ -36,7 +36,7 @@ keep the public artifacts available through at least August 12.
 | Tagline | Before you enter, prove you can leave. |
 | Category | **Work & Productivity** |
 | Repository URL | [github.com/pakales/exitcanary](https://github.com/pakales/exitcanary) — public; tested runtime source snapshot `a178969062a631aa669dcdf664b9c05f4a297d28` |
-| Public YouTube demo video | [youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k) — public on EV1 Labs; signed-out 1080p HD, unmuted audio, English (United States) captions, title, duration, and crop verified |
+| Public YouTube demo video | [youtu.be/FWoRiuhg8sY](https://youtu.be/FWoRiuhg8sY) — public on EV1 Labs; signed-out 1080p HD, unmuted audio, English (United States) captions, title, duration, and crop verified |
 | Free working demo/test URL | [exitcanary.vercel.app](https://exitcanary.vercel.app) — public, intentionally keyless/fallback-only; bounded black-box judge smoke passed on the tested runtime snapshot |
 | Codex `/feedback` session ID | `019f813d-fdfb-7e93-8365-783b07ade86f` — confirmed as the primary build thread and entered in Devpost |
 | License | MIT |
@@ -264,7 +264,7 @@ seed-export-compare loop before purchase or renewal.
       data are present whether the judging repository is public or private.
 - [x] Private-repository sharing is not applicable; the repository is public.
 - [x] Upload the verified 93-second candidate to public YouTube (not unlisted)
-      at `https://youtu.be/-x6M4nCIX3k`; it includes audible narration
+      at `https://youtu.be/FWoRiuhg8sY`; it includes audible narration
       explaining Codex and GPT-5.6.
 - [x] Remove unlicensed music, footage, copyrighted material, and third-party
       marks unless their use is permitted; keep a source/license note for every
@@ -322,7 +322,7 @@ and size 14,120,268 bytes. The final SRT SHA-256 is
 the final thumbnail SHA-256 is
 `044c2389917513fe56759c1076fa8536d4a90a821b857d92c1671b0a7ac1013c`.
 This exact candidate is public at
-`https://youtu.be/-x6M4nCIX3k`. Its deterministic production audit passed:
+`https://youtu.be/FWoRiuhg8sY`. Its deterministic production audit passed:
 
 - 93.000 seconds, 1920 × 1080, H.264, `yuv420p`, 30 fps;
 - AAC stereo at 48 kHz, -15.99 LUFS, -4.50 dBTP;
