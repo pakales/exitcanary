@@ -57,6 +57,9 @@ describe("ExitCanary human confirmation flow", () => {
 
     const skipLink = screen.getByRole("link", { name: "Skip to exit test" });
     const homeLink = screen.getByRole("link", { name: "ExitCanary home" });
+    const ev1BuildLink = screen.getByRole("link", {
+      name: "An EV1 Labs build",
+    });
     const demoButton = screen.getByRole("button", {
       name: "Run 60-second demo",
     });
@@ -68,6 +71,8 @@ describe("ExitCanary human confirmation flow", () => {
     expect(skipLink).toHaveFocus();
     await user.tab();
     expect(homeLink).toHaveFocus();
+    await user.tab();
+    expect(ev1BuildLink).toHaveFocus();
     await user.tab();
     expect(demoButton).toHaveFocus();
     await user.tab();

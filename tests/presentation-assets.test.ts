@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -26,5 +27,36 @@ describe("public presentation contract", () => {
     );
     expect(image.readUInt32BE(16)).toBe(1200);
     expect(image.readUInt32BE(20)).toBe(630);
+  });
+
+  it("locks the official EV1 mark and responsive photoreal machine states", () => {
+    const ev1Mark = readFileSync(join(process.cwd(), "public", "ev1-labs-mark.svg"));
+    expect(createHash("sha256").update(ev1Mark).digest("hex")).toBe(
+      "d1074b27463fb95e6ccfe07e1e7cba65528a08fe6e1af79919427bdd81b41032",
+    );
+
+    const states = [
+      "start",
+      "mapping",
+      "review",
+      "evaluating",
+      "ready",
+      "needs-review",
+      "blocked",
+    ];
+    for (const state of states) {
+      for (const [suffix, width, height] of [
+        ["1600", 1600, 900],
+        ["820", 820, 462],
+      ] as const) {
+        const image = readFileSync(
+          join(process.cwd(), "public", "exit-machine", `${state}-${suffix}.webp`),
+        );
+        expect(image.subarray(0, 4).toString("ascii")).toBe("RIFF");
+        expect(image.subarray(8, 16).toString("ascii")).toBe("WEBPVP8 ");
+        expect(image.readUInt16LE(26) & 0x3fff).toBe(width);
+        expect(image.readUInt16LE(28) & 0x3fff).toBe(height);
+      }
+    }
   });
 });

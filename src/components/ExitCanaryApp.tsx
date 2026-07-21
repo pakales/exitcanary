@@ -4,18 +4,14 @@ import {
   AlertTriangle,
   ArrowRight,
   Bot,
-  Box,
   Check,
   CheckCircle2,
   CircleDot,
-  Database,
   Download,
   FileArchive,
   FileJson,
   FileUp,
   Fingerprint,
-  History,
-  Link2,
   LockKeyhole,
   RotateCcw,
   ShieldCheck,
@@ -325,16 +321,76 @@ async function evaluateThroughServer(session: MappingSession): Promise<Evaluatio
   return EvaluationReceiptSchema.parse(await response.json());
 }
 
-const CANARY_OBJECTS = [
-  { key: "contacts", label: "Contacts", icon: Database },
-  { key: "companies", label: "Companies", icon: Box },
-  { key: "relations", label: "Relations", icon: Link2 },
-  { key: "attachments", label: "Attachments", icon: FileArchive },
-  { key: "history", label: "History", icon: History },
-  { key: "custom", label: "Custom fields", icon: Fingerprint },
-] as const;
-
 type Phase = "prepare" | "mapping" | "review" | "verdict";
+
+type MachineStateKey =
+  | "start"
+  | "mapping"
+  | "review"
+  | "evaluating"
+  | "ready"
+  | "needs-review"
+  | "blocked";
+
+type MachineState = {
+  key: MachineStateKey;
+  label: string;
+  detail: string;
+  tone: "idle" | "active" | "ready" | "review" | "blocked";
+  alt: string;
+};
+
+const MACHINE_STATES: Record<MachineStateKey, MachineState> = {
+  start: {
+    key: "start",
+    label: "SYSTEM IDLE",
+    detail: "Waiting for a known canary export",
+    tone: "idle",
+    alt: "ExitCanary verification machine with the canary capsule waiting at intake.",
+  },
+  mapping: {
+    key: "mapping",
+    label: "MAPPING ONLY",
+    detail: "Export fields are being aligned; no verdict exists yet",
+    tone: "active",
+    alt: "ExitCanary verification machine lifting the canary capsule toward the chamber.",
+  },
+  review: {
+    key: "review",
+    label: "HUMAN CONFIRMATION",
+    detail: "Review every proposed field meaning before verification",
+    tone: "review",
+    alt: "ExitCanary verification machine with the canary capsule aligned to the open chamber.",
+  },
+  evaluating: {
+    key: "evaluating",
+    label: "DETERMINISTIC CHECK",
+    detail: "Confirmed evidence is being evaluated against the fixed policy",
+    tone: "active",
+    alt: "ExitCanary verification machine inserting the canary capsule into the chamber.",
+  },
+  ready: {
+    key: "ready",
+    label: "EXIT READY",
+    detail: "Every required check passed",
+    tone: "ready",
+    alt: "ExitCanary verification machine open after a successful portability check.",
+  },
+  "needs-review": {
+    key: "needs-review",
+    label: "NEEDS REVIEW",
+    detail: "The supplied evidence cannot support a safe final decision",
+    tone: "review",
+    alt: "ExitCanary verification machine paused with the chamber partially closed for review.",
+  },
+  blocked: {
+    key: "blocked",
+    label: "NOT EXIT-READY",
+    detail: "At least one required portability check failed",
+    tone: "blocked",
+    alt: "ExitCanary verification machine closed around a trapped canary capsule.",
+  },
+};
 
 function verdictKind(verdict: ExitVerdict | undefined) {
   if (verdict === "EXIT_READY") return "ready";
@@ -353,28 +409,6 @@ function evidenceIcon(state: EvidenceState): ReactNode {
   if (state === "pass") return <Check aria-hidden="true" />;
   if (state === "fail") return <X aria-hidden="true" />;
   return <AlertTriangle aria-hidden="true" />;
-}
-
-function statusForObject(
-  objectKey: (typeof CANARY_OBJECTS)[number]["key"],
-  result: BundledResultView | null,
-): EvidenceState | "waiting" {
-  if (!result) return "waiting";
-
-  const matchingTerms: Record<typeof objectKey, string[]> = {
-    contacts: ["contact"],
-    companies: ["company"],
-    relations: ["relations"],
-    attachments: ["attachment"],
-    history: ["history", "timeline", "activities"],
-    custom: ["custom"],
-  };
-  const check = result.evidence.find((item) =>
-    matchingTerms[objectKey].some((term) =>
-      `${item.id} ${item.label}`.toLowerCase().includes(term),
-    ),
-  );
-  return check?.state ?? "waiting";
 }
 
 function ModelBadge({ demo }: { demo: MappingSession | null }) {
@@ -436,62 +470,79 @@ function ProgressSteps({ phase }: { phase: Phase }) {
   );
 }
 
-function ExitScene({
+function machineStateFor({
   phase,
+  busyStage,
   result,
 }: {
   phase: Phase;
+  busyStage: "mapping" | "evaluating";
   result: BundledResultView | null;
+}): MachineState {
+  if (phase === "verdict" && result) {
+    if (result.verdict === "EXIT_READY") return MACHINE_STATES.ready;
+    if (result.verdict === "NEEDS_REVIEW") return MACHINE_STATES["needs-review"];
+    return MACHINE_STATES.blocked;
+  }
+  if (phase === "review") return MACHINE_STATES.review;
+  if (phase === "mapping") return MACHINE_STATES[busyStage];
+  return MACHINE_STATES.start;
+}
+
+function ExitMachineStage({
+  phase,
+  busyStage,
+  result,
+  onRunDemo,
+}: {
+  phase: Phase;
+  busyStage: "mapping" | "evaluating";
+  result: BundledResultView | null;
+  onRunDemo: () => void;
 }) {
-  const gateState =
-    phase === "mapping" || phase === "review"
-      ? "scanning"
-      : result
-        ? verdictKind(result.verdict)
-        : "waiting";
+  const state = machineStateFor({ phase, busyStage, result });
+  const imageBase = `/exit-machine/${state.key}`;
 
   return (
-    <div className="exit-scene" aria-label="Canary business data exit corridor">
-      <section className="exit-zone exit-zone--source" aria-label="Known canary data">
-        <div className="exit-zone-label">
-          <Database aria-hidden="true" />
-          <span>Known input</span>
-        </div>
-        <ul className="data-stack">
-          {CANARY_OBJECTS.map(({ key, label, icon: Icon }) => (
-            <li className="data-token" data-state="pass" key={key}>
-              <Icon aria-hidden="true" />
-              {label}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <div className="exit-gate-wrap" aria-hidden="true">
-        <div className="exit-gate" data-state={gateState}>
-          <span className="gate-scan" />
-          <span className="gate-word">Exit</span>
-        </div>
-        <span className="gate-orbit" />
+    <div className="exit-machine-stage" data-machine-state={state.key}>
+      <div className="exit-machine-intro">
+        <p className="exit-kicker">Portability test before the contract</p>
+        <h1 id="exit-title">
+          Before you enter,
+          <br />
+          <em>prove you can leave.</em>
+        </h1>
+        <p className="exit-machine-description">
+          Plant known business data in a SaaS trial. Export it back. Deterministic checks reveal
+          what survives the exit—and what gets trapped.
+        </p>
+        <button
+          className="exit-button exit-button--primary exit-machine-cta"
+          onClick={onRunDemo}
+          type="button"
+        >
+          <FileArchive aria-hidden="true" /> Run 60-second demo
+        </button>
       </div>
 
-      <section className="exit-zone exit-zone--destination" aria-label="Exported data">
-        <div className="exit-zone-label">
-          <ShieldCheck aria-hidden="true" />
-          <span>Verified exit</span>
-        </div>
-        <ul className="data-stack">
-          {CANARY_OBJECTS.map(({ key, label, icon: Icon }) => {
-            const state = statusForObject(key, result);
-            return (
-              <li className="data-token" data-state={state} key={key}>
-                <Icon aria-hidden="true" />
-                {label}
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+      <picture className="exit-machine-media">
+        <source media="(max-width: 640px)" srcSet={`${imageBase}-820.webp`} />
+        <img
+          alt={state.alt}
+          fetchPriority={state.key === "start" ? "high" : "auto"}
+          height="900"
+          key={state.key}
+          loading={state.key === "start" ? "eager" : "lazy"}
+          src={`${imageBase}-1600.webp`}
+          width="1600"
+        />
+      </picture>
+
+      <div className="exit-machine-status" data-tone={state.tone} role="status">
+        <span className="exit-machine-status-light" aria-hidden="true" />
+        <strong>{state.label}</strong>
+        <span>{state.detail}</span>
+      </div>
     </div>
   );
 }
@@ -851,7 +902,7 @@ export function ExitCanaryApp() {
   const workbenchState = verdictKind(verdict);
 
   return (
-    <main className="exit-app" onDragLeave={() => setIsDragging(false)} onDragOver={onDragOver} onDrop={onDrop}>
+    <main className="exit-app" id="top" onDragLeave={() => setIsDragging(false)} onDragOver={onDragOver} onDrop={onDrop}>
       <a className="skip-link" href="#exit-workbench" onClick={focusWorkbench}>
         Skip to exit test
       </a>
@@ -865,49 +916,25 @@ export function ExitCanaryApp() {
             </span>
             <span>ExitCanary</span>
           </a>
-          <div className="exit-header-meta" aria-label="Privacy and test scope">
-            <span>
-              <LockKeyhole aria-hidden="true" /> No export retained
-            </span>
-            <span>
-              <Sparkles aria-hidden="true" /> CRM canary · v1
-            </span>
+          <div className="exit-header-actions">
+            <div className="exit-header-meta" aria-label="Privacy">
+              <span>
+                <LockKeyhole aria-hidden="true" /> No export retained
+              </span>
+            </div>
+            <a
+              aria-label="An EV1 Labs build"
+              className="ev1-build-link"
+              href="https://ev1labs.com/labs/build-week-2026/"
+              rel="noreferrer"
+              target="_blank"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- Exact-byte official EV1 mark is intentionally served without transformation. */}
+              <img alt="" height="24" src="/ev1-labs-mark.svg" width="24" />
+              <span>AN EV1 LABS BUILD</span>
+            </a>
           </div>
         </header>
-
-        <section className="exit-hero" id="top" aria-labelledby="exit-title">
-          <div className="exit-hero-copy">
-            <p className="exit-kicker">Portability test before the contract</p>
-            <h1 id="exit-title">
-              Before you enter,
-              <br />
-              <em>prove you can leave.</em>
-            </h1>
-            <p className="exit-hero-description">
-              Plant known business data in a SaaS trial. Export it back. ExitCanary maps the files,
-              then deterministic checks reveal what survives the exit—and what gets trapped.
-            </p>
-            <button
-              className="exit-button exit-button--primary exit-hero-cta"
-              onClick={runBundledDemo}
-              type="button"
-            >
-              <FileArchive aria-hidden="true" /> Run 60-second demo
-            </button>
-          </div>
-
-          <div className="exit-proof-loop" aria-label="Known input becomes a verified exit">
-            <span>
-              Plant
-              <strong>Known input</strong>
-            </span>
-            <ArrowRight aria-hidden="true" />
-            <span>
-              Prove
-              <strong>Verified exit</strong>
-            </span>
-          </div>
-        </section>
 
         <section
           className="exit-workbench"
@@ -921,12 +948,17 @@ export function ExitCanaryApp() {
             Exit readiness test
           </h2>
 
+          <ExitMachineStage
+            busyStage={busyStage}
+            onRunDemo={runBundledDemo}
+            phase={phase}
+            result={result}
+          />
+
           <div className="exit-workbench-top">
             <ProgressSteps phase={phase} />
             <ModelBadge demo={activeDemo} />
           </div>
-
-          <ExitScene phase={phase} result={result} />
 
           <div className="exit-dock">
             {phase === "prepare" ? (
