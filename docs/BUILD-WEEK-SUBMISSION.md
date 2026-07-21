@@ -289,11 +289,11 @@ Do not publish any of the following without new evidence and review:
 
 The exact local upload candidate is `exitcanary-build-week-demo-1080p.mp4` with
 SHA-256
-`5c354bea113fbf59269b9f4c1365a55efa89e308b30df9dbb466f94f4e180204`.
+`2841d7a758f4528bbcc24ddef4ea9163b265f9adcaf796c636784eeedaf30513`.
 It is **not public yet**. Its deterministic production audit passed:
 
 - 93.000 seconds, 1920 × 1080, H.264, `yuv420p`, 30 fps;
-- AAC stereo at 48 kHz, -16.01 LUFS, -4.50 dBTP;
+- AAC stereo at 48 kHz, -15.99 LUFS, -4.50 dBTP;
 - 0 decode errors and no trimmed speech;
 - 25 caption cues preserving the locked narration exactly;
 - live mapping, bundled judge path, deterministic verdict, simulated fixture
@@ -302,7 +302,8 @@ It is **not public yet**. Its deterministic production audit passed:
   metadata;
 - secret/account-identifier scan passed;
 - two independent transcription passes preserved the complete intended product
-  meaning and technical terms.
+  meaning, the specific Codex build contribution, the GPT-5.6 role, and the
+  closing tagline.
 
 This closes local video production and the user's voice-choice approval only.
 YouTube upload, signed-out playback, and public links remain hard gates.

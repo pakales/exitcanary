@@ -299,9 +299,9 @@ Public fallback preflight: PASS with synthetic canonical HTTPS environment
 Local production black-box smoke: PASS - headers, bounded ZIPs, exact target registry, both origin gates, three verdict states, digest checks
 
 Local demo video: PASS - 93.000s, 1920x1080 H.264/yuv420p/30fps,
-AAC 48kHz stereo, -16.01 LUFS, -4.50 dBTP, 0 decode errors, no trimmed speech
+AAC 48kHz stereo, -15.99 LUFS, -4.50 dBTP, 0 decode errors, no trimmed speech
 Captions: PASS - 25 cues, max 2 lines, exact locked narration, final cue at 93.000s
-Video SHA-256: 5c354bea113fbf59269b9f4c1365a55efa89e308b30df9dbb466f94f4e180204
+Video SHA-256: 2841d7a758f4528bbcc24ddef4ea9163b265f9adcaf796c636784eeedaf30513
 Video privacy/claims audit: PASS - synthetic data only; live/bundled/simulated
 states separated; AI voice disclosed; no secret or account identifier found
 

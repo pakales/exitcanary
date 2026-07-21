@@ -2,7 +2,7 @@
 
 Status: **local upload candidate verified; not public yet.** The exact candidate
 is `exitcanary-build-week-demo-1080p.mp4`, SHA-256
-`5c354bea113fbf59269b9f4c1365a55efa89e308b30df9dbb466f94f4e180204`.
+`2841d7a758f4528bbcc24ddef4ea9163b265f9adcaf796c636784eeedaf30513`.
 
 The video is 93.000 seconds, below the strict three-minute limit. It uses the
 OpenAI `marin` synthetic voice and carries a visible/metadata disclosure. The
@@ -94,16 +94,16 @@ disclosure.
 **Screen:** `EXIT READY`, 9/9, changed digest, limitation, and Codex/GPT role
 split.
 
-> All nine bounded checks now pass. Changed inputs produce a new SHA-256
-> digest—not a signature, timestamp, or origin proof. Codex built and tested
-> ExitCanary; GPT-5.6 Sol only proposes semantic mappings. Before you enter,
-> prove you can leave.
+> All nine checks pass. New inputs create a new digest—not a signature. Codex
+> defined the invariants, built the parser and evaluator, and red-teamed
+> failures. GPT-5.6 Sol only proposes mappings. Before you enter, prove you can
+> leave.
 
 ## Publication gate
 
 - [x] 93.000 seconds; H.264, `yuv420p`, 30 fps, 1920 × 1080.
-- [x] AAC stereo, 48 kHz, -16.01 LUFS, -4.50 dBTP.
-- [x] Zero decode errors, no trimmed speech, longest silence 2.288 seconds.
+- [x] AAC stereo, 48 kHz, -15.99 LUFS, -4.50 dBTP.
+- [x] Zero decode errors, no trimmed speech, longest silence 2.758 seconds.
 - [x] 25 English cues, at most two lines, exact locked narration.
 - [x] Live, fallback/bundled, deterministic verdict, and simulation states are
       visually distinct.
