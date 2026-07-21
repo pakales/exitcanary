@@ -33,17 +33,17 @@ keep the public artifacts available through at least August 12.
 | Tagline | Before you enter, prove you can leave. |
 | Category | **Work & Productivity** |
 | Repository URL | [github.com/pakales/exitcanary](https://github.com/pakales/exitcanary) — public; tested runtime source snapshot `a178969062a631aa669dcdf664b9c05f4a297d28` |
-| Public YouTube demo video | **PENDING HUMAN PUBLICATION/QA** — do not infer an upload or Devpost entry from the verified local video candidate |
+| Public YouTube demo video | [youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k) — public on EV1 Labs; signed-out 1080p HD, unmuted audio, English (United States) captions, title, duration, and crop verified |
 | Free working demo/test URL | [exitcanary.vercel.app](https://exitcanary.vercel.app) — public, intentionally keyless/fallback-only; bounded black-box judge smoke passed on the tested runtime snapshot |
 | Codex `/feedback` session ID | **UNCONFIRMED / NOT RECORDED AS SUBMITTED** — current core-build thread candidate is `019f813d-fdfb-7e93-8365-783b07ade86f`; use it only after the primary thread returns that exact ID through `/feedback` and it is manually entered in Devpost |
 | License | MIT |
 | Team/member details | **PENDING HUMAN CONFIRMATION** — match the Devpost account and authorization |
 
-Publication checkpoint on 2026-07-21: the repository and fallback-only judge
-URL above are public, and
+Publication checkpoint on 2026-07-21: the repository, fallback-only judge URL,
+and 93-second YouTube demo above are public, and
 `pnpm smoke:public-judge -- https://exitcanary.vercel.app` passed against source snapshot
-`a178969062a631aa669dcdf664b9c05f4a297d28`. This does not prove a public
-YouTube upload, a completed Devpost entry, or a submitted `/feedback` ID.
+`a178969062a631aa669dcdf664b9c05f4a297d28`. This does not prove a completed
+Devpost entry or a submitted `/feedback` ID.
 
 ## Short description
 
@@ -253,13 +253,15 @@ seed-export-compare loop before purchase or renewal.
 - [x] Confirm MIT license, README setup, Codex collaboration story, and sample
       data are present whether the judging repository is public or private.
 - [x] Private-repository sharing is not applicable; the repository is public.
-- [ ] Upload the verified 93-second local candidate to public YouTube (not
-      unlisted); it already includes audible narration explaining Codex and
-      GPT-5.6.
+- [x] Upload the verified 93-second candidate to public YouTube (not unlisted)
+      at `https://youtu.be/-x6M4nCIX3k`; it includes audible narration
+      explaining Codex and GPT-5.6.
 - [x] Remove unlicensed music, footage, copyrighted material, and third-party
       marks unless their use is permitted; keep a source/license note for every
       external asset.
-- [ ] Watch the uploaded video end-to-end while logged out.
+- [x] Verify the uploaded video while logged out: correct EV1 Labs channel,
+      public visibility, 1:33 duration, 1080p HD availability, unmuted audio,
+      English (United States) captions, title, description, and crop.
 - [ ] Add the verified free working demo/test URL to Devpost.
 - [x] Private-demo credentials are not applicable; the public fallback-only URL
       passed the bounded black-box check without cookies or authorization.
@@ -303,7 +305,8 @@ and size 14,120,268 bytes. The final SRT SHA-256 is
 `e77efca6efbd25f13750c98c1198b742471f91cf55b73854f6888baf79e7fa45`;
 the final thumbnail SHA-256 is
 `044c2389917513fe56759c1076fa8536d4a90a821b857d92c1671b0a7ac1013c`.
-The candidate is **not public yet**. Its deterministic production audit passed:
+This exact candidate is public at
+`https://youtu.be/-x6M4nCIX3k`. Its deterministic production audit passed:
 
 - 93.000 seconds, 1920 × 1080, H.264, `yuv420p`, 30 fps;
 - AAC stereo at 48 kHz, -15.99 LUFS, -4.50 dBTP;
@@ -318,9 +321,9 @@ The candidate is **not public yet**. Its deterministic production audit passed:
   meaning, the specific Codex build contribution, the GPT-5.6 role, and the
   closing tagline.
 
-This closes local video production and the user's voice-choice approval only.
-YouTube upload and signed-out playback, copying the verified video and demo URLs
-into Devpost, and final submission confirmation remain hard gates.
+This closes local video production, upload, and the signed-out technical
+playback gate. Copying the verified video and demo URLs into Devpost and final
+submission confirmation remain hard gates.
 
 ## Suggested tags
 

@@ -62,7 +62,8 @@ blocks publication.
 
 The black-box verifier proves observable deployed behavior. It cannot prove the
 provider's stored environment, actual file-picker experience, layout,
-accessibility, console state, or public video playback; keep those manual gates.
+accessibility, console state, or public video playback; those remain separate
+manual checks. The public video check is recorded below.
 
 ## Current publication record
 
@@ -73,10 +74,13 @@ accessibility, console state, or public video playback; keep those manual gates.
   [https://exitcanary.vercel.app](https://exitcanary.vercel.app)
 - Public black-box result: **PASS** for the bounded judge contract, including
   the observable fallback-only mapper identity.
+- Public YouTube demo:
+  [https://youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k) — signed-out
+  1080p HD, unmuted audio, English (United States) captions, title, duration,
+  crop, and public visibility verified.
 
-This record does not claim that the public YouTube video exists, that Devpost
-has been submitted, or that a candidate Codex `/feedback` thread ID has been
-confirmed and entered.
+This record does not claim that Devpost has been submitted or that a candidate
+Codex `/feedback` thread ID has been confirmed and entered.
 
 In a signed-out, isolated browser session:
 

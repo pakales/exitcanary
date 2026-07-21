@@ -161,9 +161,10 @@ The source is public at
 [github.com/pakales/exitcanary](https://github.com/pakales/exitcanary), and the
 bounded public judge smoke passed against the fallback-only deployment. Before
 submission, preserve the dated repository history and confirm the real primary
-build thread's `/feedback` session ID in Devpost. Public YouTube playback,
-account eligibility, the Devpost entry, and final submission confirmation
-remain explicit gates in the submission checklist.
+build thread's `/feedback` session ID in Devpost. The 93-second demo is public
+at [youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k). Account eligibility,
+the Devpost entry, and final submission confirmation remain explicit gates in
+the submission checklist.
 
 ## Verification
 
@@ -201,8 +202,8 @@ The command verified the public security headers, bounded canary and judge ZIPs,
 the exact 33-target registry, fallback-only mapper identity, foreign-origin
 rejection on both APIs, all three deterministic verdict states,
 injected-verdict rejection, digest stability, and digest separation. Browser
-accessibility, signed-out file upload, provider environment, and video playback
-remain separate manual gates.
+accessibility, signed-out file upload, and provider environment remain separate
+manual gates.
 
 ## How the decision boundary works
 
@@ -250,8 +251,8 @@ model prompts, request handling, persistence, or receipt generation.
 
 ExitCanary is prepared for the **Work & Productivity** category. The official
 challenge evaluates technological implementation, design, potential impact,
-and idea quality. The source repository and fallback-only judge URL are public;
-the public YouTube video, exact Codex `/feedback` session ID, Devpost fields,
+and idea quality. The source repository, fallback-only judge URL, and public
+YouTube demo are live. The exact Codex `/feedback` session ID, Devpost fields,
 and submission confirmation remain explicit pre-submission gates in
 [docs/BUILD-WEEK-SUBMISSION.md](docs/BUILD-WEEK-SUBMISSION.md).
 

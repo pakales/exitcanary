@@ -1,7 +1,8 @@
 # Locked 93-second demo script
 
-Status: **local upload candidate verified; not public yet.** The exact candidate
-is `exitcanary-build-week-demo-1080p.mp4`, SHA-256
+Status: **published and signed-out technical playback verified** at
+[youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k). The exact uploaded
+candidate is `exitcanary-build-week-demo-1080p.mp4`, SHA-256
 `0008054d917baa8a08d13cef791cb69f8f1008975c5abf97b8e38028a999477e`,
 size 14,120,268 bytes. Its final SRT SHA-256 is
 `e77efca6efbd25f13750c98c1198b742471f91cf55b73854f6888baf79e7fa45`,
@@ -119,10 +120,12 @@ split.
       visually distinct.
 - [x] Digest limitation and synthetic voice disclosure are visible.
 - [x] Secret/account-identifier and claim scans pass.
-- [ ] Upload to **public YouTube**; unlisted visibility is not sufficient.
-- [ ] Watch the uploaded 1080p version with captions and audio while signed out.
-- [ ] Copy the final public YouTube URL into the submission and re-check
-      signed-out playback.
+- [x] Upload to **public YouTube** at `https://youtu.be/-x6M4nCIX3k`; the final
+      visibility is Public, not Unlisted.
+- [x] Verify 1080p HD availability, captions, unmuted audio, title, duration,
+      crop, description, and EV1 Labs channel identity while signed out.
+- [ ] Copy the final public YouTube URL into Devpost and confirm the submitted
+      project page resolves it.
 
 Do not rebuild or re-record merely because the product gained non-visual
 fail-closed deployment hardening after capture. Rebuild only if public behavior,

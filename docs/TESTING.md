@@ -314,9 +314,13 @@ Thumbnail SHA-256: 044c2389917513fe56759c1076fa8536d4a90a821b857d92c1671b0a7ac10
 Video privacy/claims audit: PASS - synthetic data only; live/bundled/simulated
 states separated; AI voice disclosed; no secret or account identifier found
 
+Public YouTube playback: PASS - `https://youtu.be/-x6M4nCIX3k`; public on EV1
+Labs, 1:33, 1080p HD available, unmuted audio, English (United States) captions,
+expected title/description/crop verified signed out
+
 Skipped checks: provider-stored environment inspection, signed-out browser/file
-upload/accessibility QA, public-video playback, `/feedback` confirmation, and
-Devpost submission state remain separate gates.
+upload/accessibility QA, `/feedback` confirmation, and Devpost submission state
+remain separate gates.
 Residual risk accepted for submission: receipt binds self-supplied normalized
 evidence rather than attesting vendor origin. The public judge posture therefore
 ships no API key and disables live mapping; process-local model rate limiting is
