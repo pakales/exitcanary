@@ -1,6 +1,9 @@
-# OpenAI Build Week submission draft
+# OpenAI Build Week submission record
 
-Status: **draft — do not submit without completing every marked gate.**
+Status: **submitted and publicly verified on 2026-07-21** at
+[devpost.com/software/exitcanary](https://devpost.com/software/exitcanary).
+Devpost still permits edits until the live deadline; substantive materials
+must be frozen at the deadline.
 
 Official references checked on 2026-07-21:
 
@@ -16,8 +19,8 @@ minutes with audio
 covering both Codex and GPT-5.6, and a testable code repository with relevant
 licensing and setup/sample guidance. A private repository must be shared with
 `testing@devpost.com` and `build-week-event@openai.com`. The submission also
-needs the primary build thread's Codex `/feedback` session ID. Re-check the live
-page immediately before submission.
+needs the primary build thread's Codex `/feedback` session ID. The live page and
+account-side values were rechecked on 2026-07-21 before the final submit action.
 
 The official rules define the submission period as July 13, 2026 at 9:00 AM PT
 through July 21, 2026 at 5:00 PM PT and the judging period as July 22 at 10:00
@@ -27,7 +30,7 @@ keep the public artifacts available through at least August 12.
 
 ## Submission identity
 
-| Field | Draft |
+| Field | Submitted value |
 | --- | --- |
 | Project name | ExitCanary |
 | Tagline | Before you enter, prove you can leave. |
@@ -35,15 +38,19 @@ keep the public artifacts available through at least August 12.
 | Repository URL | [github.com/pakales/exitcanary](https://github.com/pakales/exitcanary) — public; tested runtime source snapshot `a178969062a631aa669dcdf664b9c05f4a297d28` |
 | Public YouTube demo video | [youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k) — public on EV1 Labs; signed-out 1080p HD, unmuted audio, English (United States) captions, title, duration, and crop verified |
 | Free working demo/test URL | [exitcanary.vercel.app](https://exitcanary.vercel.app) — public, intentionally keyless/fallback-only; bounded black-box judge smoke passed on the tested runtime snapshot |
-| Codex `/feedback` session ID | **UNCONFIRMED / NOT RECORDED AS SUBMITTED** — current core-build thread candidate is `019f813d-fdfb-7e93-8365-783b07ade86f`; use it only after the primary thread returns that exact ID through `/feedback` and it is manually entered in Devpost |
+| Codex `/feedback` session ID | `019f813d-fdfb-7e93-8365-783b07ade86f` — confirmed as the primary build thread and entered in Devpost |
 | License | MIT |
-| Team/member details | **PENDING HUMAN CONFIRMATION** — match the Devpost account and authorization |
+| Submitter | Individual — Evaldas Vigelis (`@e-vigelis`), country of residence Lithuania |
+| Devpost status | **Submitted** — confirmed both by the post-submit success notice and the OpenAI Build Week **My projects** page |
+| Public Devpost page | [devpost.com/software/exitcanary](https://devpost.com/software/exitcanary) — verified in an isolated signed-out browser |
 
-Publication checkpoint on 2026-07-21: the repository, fallback-only judge URL,
-and 93-second YouTube demo above are public, and
+Publication checkpoint on 2026-07-21: the Devpost entry, repository,
+fallback-only judge URL, and 93-second YouTube demo above are public, and
 `pnpm smoke:public-judge -- https://exitcanary.vercel.app` passed against source snapshot
-`a178969062a631aa669dcdf664b9c05f4a297d28`. This does not prove a completed
-Devpost entry or a submitted `/feedback` ID.
+`a178969062a631aa669dcdf664b9c05f4a297d28`. The signed-out Devpost page exposed
+the correct video, demo URL, GitHub repository, three-image gallery, project
+story, and **Submitted to OpenAI Build Week** association without an
+**Incomplete submission** marker.
 
 ## Short description
 
@@ -137,8 +144,9 @@ Codex was used as the primary build environment to:
 Concrete examples from the build session include finding and fixing a
 parser-to-confirmation path-length mismatch, proving ZIP expansion limits
 before unsafe inflation, and red-teaming an inherited API key into an explicit
-exact-`true` live flag plus a deployment preflight. The real `/feedback` ID is
-still an account-side submission gate and must not be inferred from source code.
+exact-`true` live flag plus a deployment preflight. The primary build thread ID
+`019f813d-fdfb-7e93-8365-783b07ade86f` was confirmed at the account boundary
+and entered in the submitted Devpost form; it was not inferred from source code.
 
 ### Challenges
 
@@ -212,16 +220,18 @@ seed-export-compare loop before purchase or renewal.
 ## Required submission gates
 
 - [x] Re-read the current Devpost rules and eligibility requirements.
-- [ ] Confirm the entrant/team/organization is eligible and, if applicable, has
-      an authorized representative.
+- [x] Record the submitter as Individual — Evaldas Vigelis, country of residence
+      Lithuania. The entrant explicitly accepted the Official Rules and
+      Devpost Terms at submission; eligibility remains entrant-attested.
 - [x] Preserve evidence that this project was newly created during the July
       13–21 submission period; otherwise document only the meaningful extension
       made with Codex/GPT-5.6 after the period opened, using dated commits and
       session evidence.
 - [x] Confirm the project is entered under **Work & Productivity**.
 - [x] Confirm a working project built with Codex and GPT-5.6.
-- [ ] Confirm the running project functions exactly as the video and submission
-      text depict.
+- [x] Confirm the running public project functions as the video and submission
+      text depict: signed-out flawed → `NOT_EXIT_READY` → disclosed fixture swap
+      → `EXIT_READY` passed with 33 reviewed mappings and a changed digest.
 - [x] Run and record `pnpm verify` on the local product commit.
 - [x] Run the live GPT-5.6 Sol synthetic-data smoke test.
 - [x] Choose and document the public credential posture: keyless,
@@ -262,7 +272,8 @@ seed-export-compare loop before purchase or renewal.
 - [x] Verify the uploaded video while logged out: correct EV1 Labs channel,
       public visibility, 1:33 duration, 1080p HD availability, unmuted audio,
       English (United States) captions, title, description, and crop.
-- [ ] Add the verified free working demo/test URL to Devpost.
+- [x] Add the verified free working demo/test URL to Devpost and confirm it is
+      exposed on the signed-out public project page.
 - [x] Private-demo credentials are not applicable; the public fallback-only URL
       passed the bounded black-box check without cookies or authorization.
 - [ ] Keep the project available free of charge and without restriction through
@@ -270,17 +281,22 @@ seed-export-compare loop before purchase or renewal.
       overview page's later August 7 date.
 - [x] Confirm the local description, video, captions, and test instructions are
       in English; recheck the pasted Devpost fields before submission.
-- [ ] Confirm original ownership, privacy/publicity rights, third-party SDK/API
-      authorization, and open-source license compliance.
+- [x] Confirm original ownership, privacy/publicity rights, third-party SDK/API
+      authorization, and open-source license compliance through the entrant's
+      explicit Official Rules/Devpost Terms acceptance. This is an
+      entrant-attested legal representation, not an independent legal audit.
 - [x] Confirm the repository and downloadable artifacts contain no malicious or
       disabling code in the reviewed local source and locked media candidate.
-- [ ] Capture the real `/feedback` Codex session ID from the session where most
-      core functionality was built.
-- [ ] If other projects are submitted by the same entrant, document that each is
-      unique and substantially different.
+- [x] Capture and enter the real primary Codex session ID:
+      `019f813d-fdfb-7e93-8365-783b07ade86f`.
+- [x] Document the separation from the entrant's other submissions: ExitCanary
+      is a SaaS procurement/data-portability product; Gatehold coordinates
+      local coding agents, and ProofLatch evaluates software release evidence.
 - [x] Replace factual placeholders with verified evidence or explicit
       publication/human-confirmation gates.
-- [ ] Submit before the live deadline; confirm Devpost shows the project as submitted.
+- [x] Submit before the live deadline; confirm the success notice, the OpenAI
+      Build Week **My projects** status **Submitted ExitCanary**, and the
+      signed-out public page at `https://devpost.com/software/exitcanary`.
 - [ ] Freeze the submitted materials at the deadline; the official rules do not
       permit ordinary substantive submission changes afterward.
 
@@ -321,9 +337,9 @@ This exact candidate is public at
   meaning, the specific Codex build contribution, the GPT-5.6 role, and the
   closing tagline.
 
-This closes local video production, upload, and the signed-out technical
-playback gate. Copying the verified video and demo URLs into Devpost and final
-submission confirmation remain hard gates.
+This closes local video production, upload, signed-out technical playback, and
+Devpost publication. The verified video and demo URLs resolve from the public
+submitted project page.
 
 ## Suggested tags
 

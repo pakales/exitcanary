@@ -51,8 +51,8 @@ sufficient.
 
 ## Runtime components
 
-The exact paths below must be checked against the final source tree before
-submission.
+The exact paths below were checked against the submitted release source and
+must be rechecked after any substantive architecture change.
 
 | Component | Responsibility | Trust level |
 | --- | --- | --- |
@@ -114,8 +114,10 @@ become proof of record preservation.
 The parsed packet is not yet the evaluator's strict normalized CRM input.
 `normalizeParsedExport` applies the confirmed mapping, binds attachment bytes,
 and validates the result as `normalized-crm-export@1.0.0`. The UI calls this
-adapter only after a complete proposal is explicitly confirmed. Final browser
-validation of this real-upload path remains a pre-submission gate.
+adapter only after a complete proposal is explicitly confirmed. The local
+real-upload browser path passed; repeating it on the public host remains a
+separate operational check rather than evidence supplied by the black-box API
+smoke.
 
 The adapter deliberately supports one source record table per canonical entity.
 If, for example, contact fields are split across two source tables, it raises a

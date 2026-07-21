@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://exitcanary.example"),
+  metadataBase: new URL("https://exitcanary.vercel.app"),
   title: {
     default: "ExitCanary — Prove you can leave",
     template: "%s · ExitCanary",
@@ -27,16 +27,20 @@ export const metadata: Metadata = {
     "export verification",
     "vendor lock-in",
   ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "ExitCanary — Before you enter, prove you can leave.",
     description:
       "Seed a known canary dataset, export it, and get a deterministic exit-readiness receipt.",
+    url: "/",
     type: "website",
     siteName: "ExitCanary",
   },
   robots: {
-    index: false,
-    follow: false,
+    index: true,
+    follow: true,
   },
 };
 

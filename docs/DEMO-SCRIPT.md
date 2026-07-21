@@ -124,8 +124,8 @@ split.
       visibility is Public, not Unlisted.
 - [x] Verify 1080p HD availability, captions, unmuted audio, title, duration,
       crop, description, and EV1 Labs channel identity while signed out.
-- [ ] Copy the final public YouTube URL into Devpost and confirm the submitted
-      project page resolves it.
+- [x] Copy the final public YouTube URL into Devpost and confirm the signed-out
+      submitted page at `https://devpost.com/software/exitcanary` resolves it.
 
 Do not rebuild or re-record merely because the product gained non-visual
 fail-closed deployment hardening after capture. Rebuild only if public behavior,

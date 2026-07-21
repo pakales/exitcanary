@@ -134,10 +134,10 @@ walkthrough and its claim gates.
 
 ## Built with Codex and GPT-5.6
 
-This repository is being created in Codex during the Build Week submission
-period. Codex is the primary engineering workspace: it turned the product
+This repository was created in Codex during the Build Week submission period.
+Codex was the primary engineering workspace: it turned the product
 thesis into explicit invariants, split implementation into bounded core,
-parser/API, interface, and documentation workstreams, and is being used for
+parser/API, interface, and documentation workstreams, and was used for
 contract tests, integration review, UI verification, and claim red-teaming.
 
 The entrant retained the key product and risk decisions:
@@ -159,12 +159,13 @@ contract and has no verdict field.
 
 The source is public at
 [github.com/pakales/exitcanary](https://github.com/pakales/exitcanary), and the
-bounded public judge smoke passed against the fallback-only deployment. Before
-submission, preserve the dated repository history and confirm the real primary
-build thread's `/feedback` session ID in Devpost. The 93-second demo is public
-at [youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k). Account eligibility,
-the Devpost entry, and final submission confirmation remain explicit gates in
-the submission checklist.
+bounded public judge smoke passed against the fallback-only deployment. The
+93-second demo is public at
+[youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k). The Build Week entry is
+submitted at [devpost.com/software/exitcanary](https://devpost.com/software/exitcanary)
+with primary Codex session ID
+`019f813d-fdfb-7e93-8365-783b07ade86f`; signed-out access and the Devpost
+**Submitted** state were verified on 2026-07-21.
 
 ## Verification
 
@@ -244,16 +245,16 @@ model prompts, request handling, persistence, or receipt generation.
 - [Testing](docs/TESTING.md)
 - [Public judge deployment](docs/PUBLIC-DEMO-DEPLOYMENT.md)
 - [Demo script](docs/DEMO-SCRIPT.md)
-- [Build Week submission draft](docs/BUILD-WEEK-SUBMISSION.md)
+- [Build Week submission record](docs/BUILD-WEEK-SUBMISSION.md)
 - [Public sample data](examples/README.md)
 
 ## Build Week
 
-ExitCanary is prepared for the **Work & Productivity** category. The official
+ExitCanary is submitted in the **Work & Productivity** category. The official
 challenge evaluates technological implementation, design, potential impact,
-and idea quality. The source repository, fallback-only judge URL, and public
-YouTube demo are live. The exact Codex `/feedback` session ID, Devpost fields,
-and submission confirmation remain explicit pre-submission gates in
+and idea quality. The source repository, fallback-only judge URL, public
+YouTube demo, and public Devpost page are live. The exact Codex `/feedback`
+session ID and the verified submission evidence are recorded in
 [docs/BUILD-WEEK-SUBMISSION.md](docs/BUILD-WEEK-SUBMISSION.md).
 
 ## License

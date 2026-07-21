@@ -156,10 +156,11 @@ returns uncached JSON. In production, the expected origin should be pinned with
 
 The current UI connects selected files to the parser, mapper, confirmation,
 normalizer, and server evaluator. The checked-in example archives have also
-passed a parser → normalizer → evaluator artifact test. Final browser and live
-model validation on the exact committed/deployed build remain separate
-pre-submission gates; the current prose-free structured model contract passed a
-bounded synthetic live smoke.
+passed a parser → normalizer → evaluator artifact test. Browser and live-model
+validation remain separately recorded release evidence: the local real-upload
+path passed, the public bundled path and black-box contract passed, and the
+current prose-free structured model contract passed a bounded synthetic live
+smoke. The public judge deployment intentionally remains fallback-only.
 
 ## Semantic mapping input
 

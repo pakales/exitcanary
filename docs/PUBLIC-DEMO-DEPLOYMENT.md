@@ -78,9 +78,15 @@ manual checks. The public video check is recorded below.
   [https://youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k) — signed-out
   1080p HD, unmuted audio, English (United States) captions, title, duration,
   crop, and public visibility verified.
+- Public Build Week submission:
+  [https://devpost.com/software/exitcanary](https://devpost.com/software/exitcanary)
+  — **Submitted** and verified signed out with the correct demo, repository,
+  video, gallery, and OpenAI Build Week association.
+- Submitted Codex `/feedback` session ID:
+  `019f813d-fdfb-7e93-8365-783b07ade86f`.
 
-This record does not claim that Devpost has been submitted or that a candidate
-Codex `/feedback` thread ID has been confirmed and entered.
+The Devpost submission and session ID were verified at the account boundary;
+the source repository alone is not evidence of either fact.
 
 In a signed-out, isolated browser session:
 

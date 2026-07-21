@@ -31,6 +31,13 @@ with no known vulnerabilities. Tool versions were Node `v22.22.2` and pnpm
 `10.33.2`. The tested runtime source snapshot is
 `a178969062a631aa669dcdf664b9c05f4a297d28`.
 
+The full gate was repeated after Devpost submission evidence and canonical
+public metadata were synchronized on 2026-07-21. It passed with the same 12
+Vitest files / 86 tests, five public-preflight tests, seven public-smoke tests,
+production build, and dependency-audit result. The generated root HTML exposed
+`index, follow`, canonical `https://exitcanary.vercel.app`, and the same exact
+Open Graph URL.
+
 This commit adds fail-closed live-model activation, a keyless fallback-only
 public deployment preflight, checked-in ZIP → fallback → human-confirmed
 evaluation coverage, and adversarial parser/API regressions. The bounded public
@@ -288,6 +295,8 @@ pnpm test:public-smoke: PASS - 7 tests
 pnpm build: PASS - production routes generated
 pnpm audit:prod: PASS - no known vulnerabilities
 pnpm verify: PASS
+Generated public metadata: PASS - index/follow; canonical and Open Graph URL
+https://exitcanary.vercel.app
 
 Live GPT-5.6 Sol smoke: PASS - prose-free model contract, exact model, 33 proposals, 0 unresolved, no verdict
 Flawed fixture verdict: PASS - NOT_EXIT_READY, 6 fail / 3 pass
@@ -318,9 +327,16 @@ Public YouTube playback: PASS - `https://youtu.be/-x6M4nCIX3k`; public on EV1
 Labs, 1:33, 1080p HD available, unmuted audio, English (United States) captions,
 expected title/description/crop verified signed out
 
-Skipped checks: provider-stored environment inspection, signed-out browser/file
-upload/accessibility QA, `/feedback` confirmation, and Devpost submission state
-remain separate gates.
+Devpost submission: PASS - `https://devpost.com/software/exitcanary`; post-submit
+success notice and OpenAI Build Week My projects status both showed Submitted.
+The isolated signed-out page showed the correct video, demo URL, GitHub repo,
+three-image gallery, story, and Submitted to OpenAI Build Week association.
+Primary Codex session ID: PASS -
+`019f813d-fdfb-7e93-8365-783b07ade86f` confirmed and entered in Devpost.
+
+Skipped checks: provider-stored environment inspection and a public-host run of
+the actual file-picker path remain separate operational checks. The signed-out
+bundled judge flow and public black-box contract passed.
 Residual risk accepted for submission: receipt binds self-supplied normalized
 evidence rather than attesting vendor origin. The public judge posture therefore
 ships no API key and disables live mapping; process-local model rate limiting is
