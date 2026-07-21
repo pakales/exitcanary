@@ -185,7 +185,7 @@ unclear product experience or unsupported impact claim.
 
 | Criterion | What the submission should show | Gate |
 | --- | --- | --- |
-| Technological implementation | Real CSV/JSON/ZIP intake, structured GPT-5.6 mapping, strict authority boundary, deterministic checks, tests | Final local source built on product commit `bc4d772` passed 12 Vitest files / 82 tests, five public-preflight tests, the production build, and dependency audit |
+| Technological implementation | Real CSV/JSON/ZIP intake, prose-free structured GPT-5.6 mapping, strict authority boundary, deterministic checks, tests | Current release candidate passed 12 Vitest files / 86 tests, five public-preflight tests, seven public-smoke tests, the production build, and dependency audit; exact clean release SHA is recorded at handoff |
 | Design | Coherent 93-second start-to-verdict story, clear exit-door metaphor, accessible desktop/mobile UI | Local production QA passed at 1440×900, 390×844, 200% equivalent reflow, reduced motion, keyboard flow, and zero console errors; deployed-origin rerun remains a publication gate |
 | Potential impact | Named buyer and buying/renewal moment; exact failures the product exposes | Submission copy and deterministic flawed/complete evidence are complete locally |
 | Quality of idea | Executable pre-purchase exit drill positioned against adjacent checklists, migration, and cloud-exit tools | Analog red-team is documented without a first/only claim |
@@ -230,6 +230,8 @@ seed-export-compare loop before purchase or renewal.
 - [x] Verify both `/api/demo-export` variants download and traverse the real
       parser/normalizer/evaluator lane.
 - [ ] Pin and verify `EXITCANARY_PUBLIC_ORIGIN` on the deployed canonical URL.
+- [ ] Run `pnpm smoke:public-judge -- <canonical-origin>` and preserve its
+      all-PASS output for the exact deployed release.
 - [x] Exercise `EXITCANARY_LIVE_MAPPING_ENABLED=false` and confirm no model call
       occurs.
 - [x] Verify desktop/mobile/keyboard/reduced-motion behavior and zero console errors.

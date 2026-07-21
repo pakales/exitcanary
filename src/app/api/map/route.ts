@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  SemanticMappingResponseSchema,
   SourceEvidenceFieldSchema,
   type SemanticMappingResponse,
 } from "../../../lib/model-mapping";
@@ -185,10 +186,12 @@ export async function handleMapRequest(
   }
 
   try {
-    const result = await dependencies.mapSemantics({
-      ...parsed.data,
-      targets: CANONICAL_MAPPING_TARGETS,
-    });
+    const result = SemanticMappingResponseSchema.parse(
+      await dependencies.mapSemantics({
+        ...parsed.data,
+        targets: CANONICAL_MAPPING_TARGETS,
+      }),
+    );
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: jsonHeaders(commonRateHeaders),

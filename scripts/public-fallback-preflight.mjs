@@ -1,3 +1,4 @@
+import { isIP } from "node:net";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -6,26 +7,7 @@ function trimmed(env, name) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function isPrivateIpv4(hostname) {
-  const octets = hostname.split(".").map(Number);
-  if (
-    octets.length !== 4 ||
-    octets.some((value) => !Number.isInteger(value) || value < 0 || value > 255)
-  ) {
-    return false;
-  }
-
-  return (
-    octets[0] === 0 ||
-    octets[0] === 10 ||
-    octets[0] === 127 ||
-    (octets[0] === 169 && octets[1] === 254) ||
-    (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31) ||
-    (octets[0] === 192 && octets[1] === 168)
-  );
-}
-
-function validatePublicOrigin(rawOrigin) {
+export function validatePublicOrigin(rawOrigin) {
   if (!rawOrigin) {
     return "EXITCANARY_PUBLIC_ORIGIN must be set to the canonical judge URL.";
   }
@@ -33,6 +15,7 @@ function validatePublicOrigin(rawOrigin) {
   try {
     const origin = new URL(rawOrigin);
     const hostname = origin.hostname.toLowerCase();
+    const unbracketedHostname = hostname.replace(/^\[|\]$/g, "");
     const canonicalForms = new Set([origin.origin, `${origin.origin}/`]);
 
     if (origin.protocol !== "https:") {
@@ -52,10 +35,9 @@ function validatePublicOrigin(rawOrigin) {
       hostname === "localhost" ||
       hostname.endsWith(".localhost") ||
       hostname.endsWith(".local") ||
-      hostname === "[::1]" ||
-      isPrivateIpv4(hostname)
+      isIP(unbracketedHostname) !== 0
     ) {
-      return "EXITCANARY_PUBLIC_ORIGIN must be publicly reachable, not local or private.";
+      return "EXITCANARY_PUBLIC_ORIGIN must use a public DNS hostname, not a local, private, or literal IP host.";
     }
     return null;
   } catch {

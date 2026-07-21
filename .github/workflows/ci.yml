@@ -43,5 +43,11 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Public deployment safety tests
+        run: pnpm test:public-preflight && pnpm test:public-smoke
+
       - name: Production build
         run: pnpm build
+
+      - name: Production dependency audit
+        run: pnpm audit:prod

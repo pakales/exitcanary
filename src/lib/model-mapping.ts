@@ -10,6 +10,18 @@ const canonicalName = z
   .min(1)
   .max(80)
   .regex(/^[a-z][a-z0-9_]*$/);
+const verdictLanguage =
+  /\b(?:exit[\s_-]*ready|not[\s_-]*exit[\s_-]*ready|needs[\s_-]*review|(?:ready|safe|unsafe)[\s_-]*(?:to[\s_-]*)?(?:leave|exit)|(?:this|the|your|our)?[\s_-]*(?:export|packet|data(?:set)?|migration|workspace|account|system)[\s_-]*(?:is|isn't|is[\s_-]*not|looks|appears|seems|remains)[\s_-]*(?:not[\s_-]*)?(?:ready|safe|unsafe))\b/i;
+
+function boundedModelExplanation(maximumLength: number) {
+  return z
+    .string()
+    .min(1)
+    .max(maximumLength)
+    .refine((value) => !verdictLanguage.test(value), {
+      message: "Mapping prose contains reserved exit-readiness verdict language.",
+    });
+}
 
 export const SourceEvidenceFieldSchema = z
   .object({
@@ -35,6 +47,24 @@ export type CanonicalMappingTarget = z.infer<
   typeof CanonicalMappingTargetSchema
 >;
 
+export const ModelMappingBasisSchema = z.enum([
+  "header_semantics",
+  "sample_value_semantics",
+  "combined_evidence",
+]);
+
+const ModelProposedFieldMappingSchema = z
+  .object({
+    sourceFile: boundedPath,
+    sourceField: boundedName,
+    canonicalEntity: canonicalName,
+    canonicalField: canonicalName,
+    evidencePaths: z.array(boundedPath).min(1).max(3),
+    confidence: z.number().min(0).max(1),
+    basis: ModelMappingBasisSchema,
+  })
+  .strict();
+
 export const ProposedFieldMappingSchema = z
   .object({
     sourceFile: boundedPath,
@@ -43,7 +73,7 @@ export const ProposedFieldMappingSchema = z
     canonicalField: canonicalName,
     evidencePaths: z.array(boundedPath).min(1).max(3),
     confidence: z.number().min(0).max(1),
-    rationale: z.string().min(1).max(240),
+    rationale: boundedModelExplanation(240),
   })
   .strict();
 
@@ -56,6 +86,26 @@ export const UnresolvedFieldMappingSchema = z
   })
   .strict();
 
+/**
+ * Exact GPT structured-output contract. It deliberately contains no free-form
+ * rationale or summary field, so model-authored prose cannot cross the mapper
+ * boundary or resemble an authoritative exit-readiness decision.
+ */
+export const ModelSemanticMappingProposalSchema = z
+  .object({
+    proposedMapping: z
+      .array(ModelProposedFieldMappingSchema)
+      .max(MAX_MODEL_MAPPINGS),
+    unresolved: z
+      .array(UnresolvedFieldMappingSchema)
+      .max(MAX_MODEL_UNRESOLVED),
+  })
+  .strict();
+
+export type ModelSemanticMappingProposal = z.infer<
+  typeof ModelSemanticMappingProposalSchema
+>;
+
 export const SemanticMappingProposalSchema = z
   .object({
     proposedMapping: z
@@ -64,7 +114,7 @@ export const SemanticMappingProposalSchema = z
     unresolved: z
       .array(UnresolvedFieldMappingSchema)
       .max(MAX_MODEL_UNRESOLVED),
-    summary: z.string().min(1).max(600),
+    summary: boundedModelExplanation(600),
   })
   .strict();
 
@@ -85,13 +135,22 @@ export type MappingFallbackReason = z.infer<
   typeof MappingFallbackReasonSchema
 >;
 
-export const SemanticMappingResponseSchema = SemanticMappingProposalSchema.extend(
-  {
-    mode: z.enum(["live", "fallback"]),
-    model: z.literal("gpt-5.6-sol").nullable(),
-    warning: z.string().min(1).max(320).optional(),
-  },
-).strict();
+const LiveSemanticMappingResponseSchema = SemanticMappingProposalSchema.extend({
+  mode: z.literal("live"),
+  model: z.literal("gpt-5.6-sol"),
+}).strict();
+
+const FallbackSemanticMappingResponseSchema =
+  SemanticMappingProposalSchema.extend({
+    mode: z.literal("fallback"),
+    model: z.null(),
+    warning: z.string().min(1).max(320),
+  }).strict();
+
+export const SemanticMappingResponseSchema = z.discriminatedUnion("mode", [
+  LiveSemanticMappingResponseSchema,
+  FallbackSemanticMappingResponseSchema,
+]);
 
 export type SemanticMappingResponse = z.infer<
   typeof SemanticMappingResponseSchema
@@ -197,11 +256,11 @@ export function buildDeterministicHeaderFallback(
 }
 
 export function validateProposalAgainstEvidence(
-  proposal: SemanticMappingProposal,
+  proposal: unknown,
   sources: readonly SourceEvidenceField[],
   targets: readonly CanonicalMappingTarget[],
 ): SemanticMappingProposal | null {
-  const parsed = SemanticMappingProposalSchema.safeParse(proposal);
+  const parsed = ModelSemanticMappingProposalSchema.safeParse(proposal);
   if (!parsed.success) return null;
 
   const sourcesByKey = new Map(
@@ -255,5 +314,32 @@ export function validateProposalAgainstEvidence(
   }
 
   if (representedTargets.size !== targetsByKey.size) return null;
-  return parsed.data;
+
+  const rationaleByBasis: Record<
+    z.infer<typeof ModelMappingBasisSchema>,
+    string
+  > = {
+    header_semantics:
+      "GPT-5.6 matched the supplied field name to this canonical target; human confirmation is required.",
+    sample_value_semantics:
+      "GPT-5.6 matched bounded supplied sample values to this canonical target; human confirmation is required.",
+    combined_evidence:
+      "GPT-5.6 matched the supplied field name and bounded samples to this canonical target; human confirmation is required.",
+  };
+  const proposedCount = parsed.data.proposedMapping.length;
+  const unresolvedCount = parsed.data.unresolved.length;
+
+  return SemanticMappingProposalSchema.parse({
+    proposedMapping: parsed.data.proposedMapping.map(
+      ({ basis, ...mapping }) => ({
+        ...mapping,
+        rationale: rationaleByBasis[basis],
+      }),
+    ),
+    unresolved: parsed.data.unresolved,
+    summary:
+      unresolvedCount === 0
+        ? `GPT-5.6 proposed all ${proposedCount} canonical field mappings from supplied evidence. Human confirmation is still required.`
+        : `GPT-5.6 proposed ${proposedCount} canonical field mapping${proposedCount === 1 ? "" : "s"} and left ${unresolvedCount} unresolved. Human confirmation is required.`,
+  });
 }

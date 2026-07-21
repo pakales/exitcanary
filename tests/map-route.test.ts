@@ -374,6 +374,22 @@ describe("POST /api/map security boundary", () => {
     expect(body).not.toHaveProperty("verdict");
   });
 
+  it("fails closed when the mapper returns an invalid authority contract", async () => {
+    const deps = dependencies({
+      mapSemantics: vi.fn(async () => ({
+        ...fallbackResult,
+        verdict: "EXIT_READY",
+      }) as never),
+    });
+
+    const response = await handleMapRequest(jsonRequest(), deps);
+    const body = await response.text();
+
+    expect(response.status).toBe(503);
+    expect(body).toContain("mapping_unavailable");
+    expect(body).not.toContain("EXIT_READY");
+  });
+
   it("wires the production handler to an honest missing-key fallback", async () => {
     const originalKey = process.env.OPENAI_API_KEY;
     const originalLiveFlag = process.env.EXITCANARY_LIVE_MAPPING_ENABLED;

@@ -3,6 +3,9 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 
 import {
+  ModelSemanticMappingProposalSchema,
+  SemanticMappingProposalSchema,
+  SemanticMappingResponseSchema,
   buildDeterministicHeaderFallback,
   type CanonicalMappingTarget,
   type SourceEvidenceField,
@@ -97,7 +100,6 @@ describe("deterministic header mapping", () => {
                           candidateEvidencePaths: [],
                         },
                       ],
-                      summary: "No supported source field was found.",
                     },
                   },
                 ],
@@ -113,7 +115,6 @@ describe("deterministic header mapping", () => {
                   candidateEvidencePaths: [],
                 },
               ],
-              summary: "No supported source field was found.",
             },
           };
         },
@@ -157,11 +158,10 @@ describe("deterministic header mapping", () => {
           canonicalField: "email",
           evidencePaths: ["/invented/path"],
           confidence: 1,
-          rationale: "Exact match.",
+          basis: "header_semantics" as const,
         },
       ],
       unresolved: [],
-      summary: "Mapped one field.",
     };
 
     expect(validateProposalAgainstEvidence(proposal, sources, [target])).toBe(
@@ -180,11 +180,10 @@ describe("deterministic header mapping", () => {
           canonicalField: "email",
           evidencePaths: ["/contacts.csv/fields/email"],
           confidence: 1,
-          rationale: "Exact match.",
+          basis: "header_semantics" as const,
         },
       ],
       unresolved: [],
-      summary: "Mapped one field.",
     };
 
     expect(
@@ -209,6 +208,100 @@ describe("deterministic header mapping", () => {
         [target],
       ),
     ).toBe(null);
+  });
+
+  it("keeps model output prose-free and rejects reserved public verdict prose", () => {
+    const sources = [source("contacts.csv", "email")];
+    const modelProposal = {
+      proposedMapping: [
+        {
+          sourceFile: "contacts.csv",
+          sourceField: "email",
+          canonicalEntity: "contact",
+          canonicalField: "email",
+          evidencePaths: ["/contacts.csv/fields/email"],
+          confidence: 1,
+          basis: "combined_evidence" as const,
+        },
+      ],
+      unresolved: [],
+    };
+
+    expect(ModelSemanticMappingProposalSchema.safeParse(modelProposal).success).toBe(
+      true,
+    );
+    expect(
+      ModelSemanticMappingProposalSchema.safeParse({
+        ...modelProposal,
+        summary: "This export passes the exit test.",
+      }).success,
+    ).toBe(false);
+    expect(
+      ModelSemanticMappingProposalSchema.safeParse({
+        ...modelProposal,
+        proposedMapping: [
+          {
+            ...modelProposal.proposedMapping[0],
+            rationale: "Leaving this vendor is safe.",
+          },
+        ],
+      }).success,
+    ).toBe(false);
+
+    const proposal = validateProposalAgainstEvidence(
+      modelProposal,
+      sources,
+      [target],
+    );
+    expect(proposal).toMatchObject({
+      proposedMapping: [
+        expect.objectContaining({
+          rationale: expect.stringContaining("human confirmation"),
+        }),
+      ],
+      summary: expect.stringContaining("Human confirmation"),
+    });
+
+    expect(
+      SemanticMappingProposalSchema.safeParse({
+        ...proposal!,
+        summary: "EXIT_READY — safe to leave.",
+      }).success,
+    ).toBe(false);
+    expect(
+      SemanticMappingProposalSchema.safeParse({
+        ...proposal!,
+        summary: "This export is ready.",
+      }).success,
+    ).toBe(false);
+    expect(
+      SemanticMappingProposalSchema.safeParse({
+        ...proposal!,
+        summary: "This export is not ready.",
+      }).success,
+    ).toBe(false);
+    expect(
+      SemanticMappingResponseSchema.safeParse({
+        ...proposal!,
+        mode: "live",
+        model: null,
+      }).success,
+    ).toBe(false);
+    expect(
+      SemanticMappingResponseSchema.safeParse({
+        ...proposal!,
+        mode: "fallback",
+        model: "gpt-5.6-sol",
+        warning: "Deterministic fallback was used.",
+      }).success,
+    ).toBe(false);
+    expect(
+      SemanticMappingResponseSchema.safeParse({
+        ...proposal!,
+        mode: "fallback",
+        model: null,
+      }).success,
+    ).toBe(false);
   });
 });
 
@@ -319,11 +412,10 @@ describe("GPT mapping fallback", () => {
                 canonicalField: "email",
                 evidencePaths: ["/not-supplied"],
                 confidence: 1,
-                rationale: "Claimed exact match.",
+                basis: "header_semantics",
               },
             ],
             unresolved: [],
-            summary: "Mapped one field.",
           },
         }),
       },

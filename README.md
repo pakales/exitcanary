@@ -78,8 +78,9 @@ EXITCANARY_PUBLIC_ORIGIN=http://localhost:3000
 private random value of at least 16 characters and never commit it. The current
 process-local rate limit is a demo guardrail, not a production quota.
 
-Set `EXITCANARY_PUBLIC_ORIGIN` to the exact canonical origin in production; the
-request boundary does not trust forwarded headers. Live mapping runs only when
+Set `EXITCANARY_PUBLIC_ORIGIN` to the exact canonical HTTPS origin on a public
+DNS hostname in production; the request boundary does not trust forwarded
+headers. Live mapping runs only when
 `EXITCANARY_LIVE_MAPPING_ENABLED` is exactly `true`; every other value forces a
 labeled deterministic fallback even if a key is inherited. Do not expose a
 public live key behind only the process-local limiter: durable identity/quota,
@@ -165,21 +166,39 @@ public gates in the submission checklist.
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm test:public-preflight
+pnpm test:public-smoke
 pnpm build
 pnpm audit:prod
 pnpm verify
 ```
 
-`pnpm verify` is the repository gate. The final local source tree, built on
-product commit `bc4d772`, passed lint, typecheck, 12 Vitest files / 82 tests,
-five public-preflight tests, the production build, and the production audit.
-The full manual and automated matrix is in
+`pnpm verify` is the repository gate. The current release candidate passed
+lint, typecheck, 12 Vitest files / 86 tests, five public-preflight tests, seven
+public-smoke tests, the production build, and the production audit. The exact
+committed SHA is recorded in the final handoff after the same gate is repeated
+on the clean commit. The full manual and automated matrix is in
 [docs/TESTING.md](docs/TESTING.md).
 
-The bounded synthetic live-mapping smoke also passed on this worktree after the
-explicit timeout was set to 30 seconds: `gpt-5.6-sol` returned 33 proposals,
-zero unresolved targets, and no warning in about 21.0 seconds. This does not
-authorize a public paid endpoint or replace a final deployed smoke test.
+The bounded synthetic live-mapping smoke also passed on the current prose-free
+model contract: `gpt-5.6-sol` returned 33 proposals, zero unresolved targets,
+no warning, and no verdict field. This does not authorize a public paid endpoint
+or replace a final deployed smoke test.
+
+After deployment, run the bounded black-box verifier against the exact canonical
+origin. It sends only checked-in synthetic canary data, rejects redirects, and
+never sends credentials:
+
+```bash
+pnpm smoke:public-judge -- https://the-canonical-public-host.example
+```
+
+The command verifies the public security headers, bounded canary and judge ZIPs,
+the exact 33-target registry, fallback-only mapper identity, foreign-origin
+rejection on both APIs, all three deterministic verdict states,
+injected-verdict rejection, digest stability, and digest separation. Browser
+accessibility, signed-out file upload, provider environment, and video playback
+remain separate manual gates.
 
 ## How the decision boundary works
 

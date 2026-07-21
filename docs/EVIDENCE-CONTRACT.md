@@ -158,7 +158,8 @@ The current UI connects selected files to the parser, mapper, confirmation,
 normalizer, and server evaluator. The checked-in example archives have also
 passed a parser → normalizer → evaluator artifact test. Final browser and live
 model validation on the exact committed/deployed build remain separate
-pre-submission gates; the current worktree's bounded live smoke passed.
+pre-submission gates; the current prose-free structured model contract passed a
+bounded synthetic live smoke.
 
 ## Semantic mapping input
 
@@ -245,8 +246,9 @@ Each proposed field mapping must include:
 - one to three evidence paths that all match that source field's supplied
   evidence path;
 - a confidence number from 0 to 1;
-- a rationale of 1–240 characters;
-- no verdict, score upgrade, or policy instruction.
+- one closed basis enum: `header_semantics`, `sample_value_semantics`, or
+  `combined_evidence`;
+- no free-form rationale, summary, verdict, score, or policy instruction field.
 
 Example:
 
@@ -258,26 +260,32 @@ Example:
   "canonicalField": "company_id",
   "evidencePaths": ["people.csv#/org_ref"],
   "confidence": 0.92,
-  "rationale": "Values align with organization identifiers."
+  "basis": "combined_evidence"
 }
 ```
 
 An unresolved target uses one of `not_found`, `ambiguous`, or `unsupported` and
 may cite up to six supplied candidate evidence paths. A proposal includes at
-most 160 proposed mappings and 160 unresolved targets plus a 1–600 character
-summary.
+most 160 proposed mappings and 160 unresolved targets. It contains no
+model-authored prose field.
 
 The application validates both shape and references. It rejects duplicate
 source or target mappings, unknown canonical targets, invented evidence paths,
-and a response that does not represent every target exactly once. Schema-valid
-prose is not proof that the mapping is correct.
+extra prose, and a response that does not represent every target exactly once.
+Only after that validation does application code construct bounded rationale
+and mapping-count summary text from the closed basis enum and observed counts.
 
-The API response labels its origin:
+The API response uses a discriminated origin contract:
 
 - `mode: "live"` and `model: "gpt-5.6-sol"` for a validated model proposal;
-- `mode: "fallback"` and `model: null` for deterministic header matching;
-- a bounded warning explains missing key, operator-disabled live mapping,
-  refusal, timeout, invalid output, or provider failure.
+- `mode: "fallback"`, `model: null`, and a required bounded warning for
+  deterministic header matching after a missing key, operator-disabled live
+  mapping, refusal, timeout, invalid output, or provider failure.
+
+Contradictory combinations such as `live` with a null model or `fallback` with
+the GPT model identifier are schema-invalid. The route revalidates the complete
+response before serializing it, and the UI presents only application-owned
+mapping explanation.
 
 The server attempts a live model call only when
 `EXITCANARY_LIVE_MAPPING_ENABLED` is exactly `true`. Every other value is a
@@ -315,6 +323,12 @@ blocked until resolution and confirmation, while the evaluator retains the
 three-state contract for direct inputs. The bundled judge scenario uses a
 visibly disclosed pre-mapped fixture, starts with zero confirmed rows, and does
 not call the mapper.
+
+The three confirmation states are structurally exclusive. `confirmed` requires
+one selected source plus evidence paths and forbids candidates; `ambiguous`
+requires no selected source and at least two candidates; `unconfirmed` contains
+either one complete proposal or no source evidence. A contradictory state is
+rejected before evaluation.
 
 The evaluator requires exactly one confirmed mapping for each of 33 canonical
 fields. Missing, duplicated, unconfirmed, or ambiguous entries make

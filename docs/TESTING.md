@@ -18,16 +18,18 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm test:public-preflight
+pnpm test:public-smoke
 pnpm build
 pnpm audit:prod
 ```
 
-The root build session ran the full gate against the final local source tree
-built on product commit `bc4d772`: **`pnpm verify` passed** at
-`2026-07-20T23:25:12Z`, including lint, typecheck, 12 Vitest files / 82 tests,
-five independent public-preflight tests, the production build, and a production
-dependency audit with no known vulnerabilities. Tool versions were Node
-`v22.22.2` and pnpm `10.33.2`.
+The root build session ran the full gate against the current release candidate:
+**`pnpm verify` passed** on 2026-07-21 UTC, including lint, typecheck, 12 Vitest
+files / 86 tests, five independent public-preflight tests, seven independent
+public-smoke tests, the production build, and a production dependency audit
+with no known vulnerabilities. Tool versions were Node `v22.22.2` and pnpm
+`10.33.2`. The exact committed SHA and final repeat time are recorded in the
+operator handoff after the clean-commit rerun.
 
 This commit adds fail-closed live-model activation, a keyless fallback-only
 public deployment preflight, checked-in ZIP → fallback → human-confirmed
@@ -57,6 +59,9 @@ provider configuration, and signed-out judge checks remain separate gates.
 | Unknown model canonical ID | Model response rejected | PASS — model target regression |
 | Invented model evidence path | Model response rejected | PASS — model evidence regression |
 | Model attempts verdict output | Strict model schema rejects it; evaluator authority is unchanged | PASS — model verdict and evaluator injection regressions |
+| Model attempts free-form prose | Strict model proposal has no rationale/summary fields; application builds displayed explanation | PASS — prose-free model schema and mapper-boundary regressions |
+| Mapper mode/model contradiction | `live` requires exact model; `fallback` requires null model and warning | PASS — discriminated-response regression |
+| Contradictory confirmation state | Confirmed mappings cannot retain ambiguity candidates or partial source evidence | PASS — field-mapping union regression |
 | Model unavailable or disabled | Transparent fallback; no fabricated live output or false pass | PASS — mapper, route, and judge-posture regressions |
 
 ## Parser and request-boundary matrix
@@ -102,6 +107,23 @@ provider configuration, and signed-out judge checks remain separate gates.
 | Configured production origin | Exact origin accepted; mismatched/malformed origin rejected; forwarded headers ignored | PASS locally; deployed-origin rerun remains public gate |
 | Production security headers | HSTS, CSP, frame denial, same-origin resource/opener, and origin-agent headers present | PASS on local production server; deployed-origin rerun remains public gate |
 
+## Public judge black-box verifier
+
+The post-deployment verifier is deliberately separate from environment
+preflight:
+
+```bash
+pnpm smoke:public-judge -- https://the-canonical-public-host.example
+```
+
+Its Node test suite injects bounded responses and proves fail-closed handling of
+invalid/private origins, missing security headers, live or verdict-bearing
+mapper responses, ZIP and API contracts, deterministic verdicts, and changed
+digests. After deployment, the same CLI checks the real canonical host without
+cookies, authorization, credentials, redirects, retries, or non-synthetic data.
+It does not replace the signed-out browser/file-picker/accessibility/video pass
+or provider-side environment inspection.
+
 ## Live GPT-5.6 Sol smoke test
 
 Run only with a server-only credential and synthetic data.
@@ -123,15 +145,13 @@ Run only with a server-only credential and synthetic data.
    deterministic verdict matches the offline expected result.
 10. Remove any local screenshots or logs that contain request data.
 
-Status: **PASS on controlled bounded synthetic evidence.** A single-field
-request returned `mode: "live"` with model `gpt-5.6-sol`. The first full
-33-field request hit the shorter pre-adjustment timeout and safely returned a
-labeled fallback. After setting the explicit timeout to 30 seconds, the repeat
-completed live in about 21.0 seconds with 33 proposals, zero unresolved targets,
-and no warning. Commit `bc4d772` did not alter the model request contract; it
-added an explicit fail-closed requirement that the server flag equal `true`.
-The selected public judge deployment is keyless and fallback-only, so no live
-public credential posture is claimed.
+Status: **PASS on controlled bounded synthetic evidence.** The current
+prose-free structured-output contract returned `mode: "live"`, exact model
+`gpt-5.6-sol`, 33 proposals, zero unresolved targets, no warning, and no verdict
+field. The API response contained only application-owned mapping explanation.
+The explicit timeout remains 30 seconds and the server still requires the live
+flag to equal `true`. The selected public judge deployment is keyless and
+fallback-only, so no live public credential posture is claimed.
 
 The production UI upload lane was also exercised through the isolated in-app
 browser with `acme-crm-export-complete.zip`: the badge showed
@@ -198,7 +218,7 @@ Verify at minimum:
 Use the Codex in-app browser or an isolated Playwright/browser session; do not
 borrow another project's Chrome tab or development server.
 
-Current local production-browser result on the `bc4d772` product source:
+Current local production-browser result on the release candidate:
 
 - desktop 1440 × 900: PASS, no horizontal overflow, no error overlay, zero
   warning/error logs;
@@ -212,11 +232,16 @@ Current local production-browser result on the `bc4d772` product source:
 - bundled flawed → complete flow: PASS, exact six-failure/9-pass summaries,
   visible simulated-fixture disclosure, zero console warnings/errors, and
   different 64-character digests.
+- actual checked-in complete ZIP via the real file input: PASS in keyless
+  production mode; parser completed, fallback was visibly labeled, all 33 rows
+  rendered, 18 were proposed, 15 remained unresolved, and verification stayed
+  disabled until bounded human assignment;
+- accessibility labels: PASS, 33 unique `Reviewed <canonical field>` names;
+- console/network: PASS, zero warnings, errors, failed requests, or HTTP 4xx/5xx
+  responses across the tested local flows.
 
-The in-app browser's native file-picker bridge did not return a chooser during
-this final pass. That interaction is covered on the current source by the
-checked-in ZIP integration suites and was previously exercised through the
-actual upload UI; the deployed signed-out upload remains a public gate.
+The deployed signed-out upload remains a public-host gate even though the exact
+local production file-input path is now exercised.
 
 ## Security verification
 
@@ -244,20 +269,21 @@ This record covers the final local product gate. Public provider and account
 checks are recorded separately after publication.
 
 ```text
-Source product commit: bc4d772
-Validation time (UTC): 2026-07-20T23:25:12Z
+Source product commit: final release HEAD (resolve with `git rev-parse HEAD` in the operator handoff)
+Validation date (UTC): 2026-07-21
 Node: v22.22.2
 pnpm: 10.33.2
 
 pnpm lint: PASS via pnpm verify
 pnpm typecheck: PASS via pnpm verify
-pnpm test: PASS - 12 Vitest files, 82 tests
+pnpm test: PASS - 12 Vitest files, 86 tests
 pnpm test:public-preflight: PASS - 5 tests
+pnpm test:public-smoke: PASS - 7 tests
 pnpm build: PASS - production routes generated
 pnpm audit:prod: PASS - no known vulnerabilities
 pnpm verify: PASS
 
-Live GPT-5.6 Sol smoke: PASS - exact model, 33 proposals, 0 unresolved, about 21s
+Live GPT-5.6 Sol smoke: PASS - prose-free model contract, exact model, 33 proposals, 0 unresolved, no verdict
 Flawed fixture verdict: PASS - NOT_EXIT_READY, 6 fail / 3 pass
 Complete fixture verdict: PASS - EXIT_READY, 9 pass / 0 fail
 Desktop browser QA: PASS at 1440x900; no overflow
@@ -265,10 +291,12 @@ Mobile browser QA: PASS at 390x844; 48px minimum CTA, no overflow
 200% equivalent reflow: PASS at 720x450; no overflow or clipped controls
 Reduced motion: PASS - no meaningful transition/animation above 1ms
 Keyboard flow: PASS - tab order and Space activation regression
-Console errors: PASS - 0 warnings / 0 errors after bundled and real-upload flows
+Actual keyless file input: PASS - fallback labeled, 18 mapped / 15 unresolved, verification locked
+Console/network: PASS - 0 warnings, 0 errors, 0 failed requests, 0 HTTP 4xx/5xx
 Secret scan: PASS - ignored .env.local; no key-shaped value in tracked source
 Fallback-only API smoke: PASS - mode fallback, model null, no verdict, live disabled
 Public fallback preflight: PASS with synthetic canonical HTTPS environment
+Local production black-box smoke: PASS - headers, bounded ZIPs, exact target registry, both origin gates, three verdict states, digest checks
 
 Local demo video: PASS - 93.000s, 1920x1080 H.264/yuv420p/30fps,
 AAC 48kHz stereo, -16.01 LUFS, -4.50 dBTP, 0 decode errors, no trimmed speech

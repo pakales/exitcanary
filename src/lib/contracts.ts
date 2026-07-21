@@ -200,34 +200,58 @@ export const MappingCandidateSchema = z
   .strict();
 export type MappingCandidate = z.infer<typeof MappingCandidateSchema>;
 
-export const FieldMappingSchema = z
+const ConfirmedFieldMappingSchema = z
   .object({
     canonicalField: CanonicalFieldSchema,
-    confirmation: MappingConfirmationSchema,
+    confirmation: z.literal("confirmed"),
+    sourceTable: BoundedPathSchema,
+    sourceField: z.string().min(1).max(160),
+    evidencePaths: z.array(BoundedPathSchema).min(1).max(8),
+    candidates: z.array(MappingCandidateSchema).length(0),
+  })
+  .strict();
+
+const UnconfirmedFieldMappingSchema = z
+  .object({
+    canonicalField: CanonicalFieldSchema,
+    confirmation: z.literal("unconfirmed"),
     sourceTable: BoundedPathSchema.nullable(),
     sourceField: z.string().min(1).max(160).nullable(),
     evidencePaths: z.array(BoundedPathSchema).max(8),
-    candidates: z.array(MappingCandidateSchema).max(8),
+    candidates: z.array(MappingCandidateSchema).length(0),
   })
-  .strict()
+  .strict();
+
+const AmbiguousFieldMappingSchema = z
+  .object({
+    canonicalField: CanonicalFieldSchema,
+    confirmation: z.literal("ambiguous"),
+    sourceTable: z.null(),
+    sourceField: z.null(),
+    evidencePaths: z.array(BoundedPathSchema).length(0),
+    candidates: z.array(MappingCandidateSchema).min(2).max(8),
+  })
+  .strict();
+
+export const FieldMappingSchema = z
+  .discriminatedUnion("confirmation", [
+    ConfirmedFieldMappingSchema,
+    UnconfirmedFieldMappingSchema,
+    AmbiguousFieldMappingSchema,
+  ])
   .superRefine((mapping, context) => {
+    if (mapping.confirmation !== "unconfirmed") return;
+    const hasSource =
+      mapping.sourceTable !== null && mapping.sourceField !== null;
+    const hasEvidence = mapping.evidencePaths.length > 0;
     if (
-      mapping.confirmation === "confirmed" &&
-      (!mapping.sourceTable ||
-        !mapping.sourceField ||
-        mapping.evidencePaths.length === 0)
+      hasSource !== hasEvidence ||
+      (mapping.sourceTable === null) !== (mapping.sourceField === null)
     ) {
       context.addIssue({
         code: "custom",
         message:
-          "Confirmed mappings require a source table, source field, and evidence path.",
-      });
-    }
-
-    if (mapping.confirmation === "ambiguous" && mapping.candidates.length < 2) {
-      context.addIssue({
-        code: "custom",
-        message: "Ambiguous mappings require at least two candidates.",
+          "Unconfirmed mappings must contain either one complete proposal or no source evidence.",
       });
     }
   });

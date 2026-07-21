@@ -8,6 +8,11 @@ The video is 93.000 seconds, below the strict three-minute limit. It uses the
 OpenAI `marin` synthetic voice and carries a visible/metadata disclosure. The
 25-cue English SRT matches this narration exactly.
 
+The hero's **Run 60-second demo** label refers to the roughly one-minute bundled
+interactive decision path, not the contest video duration. In the 93-second
+video that path occupies the final portion after the procurement problem, data
+boundary, and distinct Codex/GPT-5.6 roles are explained.
+
 ## Truth boundary
 
 - The first mapping sequence shows a controlled synthetic live run with the

@@ -53,25 +53,26 @@ connections, shared workspaces, scheduled tests, or arbitrary document formats.
 | --- | --- | --- | --- |
 | Prompt injection in filenames, headers, keys, or cells | Model follows data as instructions | Delimit untrusted data; fixed developer instructions; strict structured output; deterministic verdict boundary | PASS — prompt-looking data regressions at mapper and route boundaries |
 | Model hallucination or invented paths | False mapping | Validate canonical IDs and every evidence reference against the supplied packet | PASS — invented path and unknown target regressions |
-| Model sets or implies verdict | Authority confusion | Exclude verdict fields from model schema; construct verdict only in deterministic code | PASS — model-output and evaluator verdict-injection regressions |
+| Model sets or implies verdict | Authority confusion | Give the model no free-form prose or verdict field; validate only mapping coordinates, evidence paths, confidence, and a closed basis enum; construct all displayed explanation and the verdict in application code | PASS — prose-free model schema, route-response validation, UI-summary, and evaluator verdict-injection regressions |
 | API key exposure | Credential abuse | Server-only module and env var; no `NEXT_PUBLIC_`; secret scanning/build inspection | PASS locally — server-only import, tracked-source/client-bundle scan, public preflight |
 | Oversized request | Memory, latency, and cost denial of service | Content-type enforcement, byte limit, schema bounds, early rejection | PASS — advertised, streamed, upload, source-count, and schema-bound regressions |
 | ZIP bomb | CPU/memory denial of service | Inspect declared expansion before inflation; bound entries, declared/measured totals, and per-entry size | PASS — high-ratio and entry-count regressions |
 | ZIP path traversal | Unsafe path handling | Normalize archive paths; reject absolute paths, `..`, and duplicate normalized paths | PASS — traversal, absolute, drive, and normalized-collision regressions |
 | Deep or cyclic JSON | Parser exhaustion | Bound payload bytes and nesting depth; reject invalid structures | PASS for JSON depth/node bounds; cyclic data cannot exist in JSON text |
 | CSV formula injection | Downstream spreadsheet execution | Treat cells as data; never auto-open or export executable formulas; escape if future CSV generation is added | PASS — formula-looking cell remains inert text |
-| XSS from evidence or model prose | Browser compromise | React text rendering only; never raw HTML; restrictive response headers | IMPLEMENTED/INSPECTED — no raw-HTML sink; local production CSP/header audit passed |
+| XSS from evidence or model output | Browser compromise | No model-authored prose crosses the mapper boundary; React text rendering only; never raw HTML; restrictive response headers | IMPLEMENTED/INSPECTED — strict prose-free model schema, no raw-HTML sink, local production CSP/header audit |
 | Cross-origin paid API calls | Budget abuse | Pin `EXITCANARY_PUBLIC_ORIGIN`; reject mismatched origins; never trust forwarded headers | PASS locally; deployed canonical-origin check remains public gate |
 | Unbounded model use | Cost denial of service | Explicit user consent, fail-closed live switch, timeout, output bounds, zero automatic retries, and deployment quota | PUBLIC RISK AVOIDED — selected judge posture is keyless fallback-only; live public promotion remains blocked |
 | Logging sensitive content | Privacy leak | No body/model logging; sanitize error telemetry | IMPLEMENTED/INSPECTED — no application logging sink; sanitized 500/503 regressions pass |
 | Hidden persistence or model retention | Privacy mismatch | No application storage; Responses API `store: false`; document transient processing | IMPLEMENTED/TESTED — no persistence layer; model request asserts `store: false` |
 | Check-registry override by client | False pass | Application-owned, versioned registry evaluated on the server; strict schemas reject extra policy fields | PASS — client check-registry and request extra-key regressions |
 | Mapping-target override by client | Misleading semantic proposal | `/api/map` rejects caller targets and injects the 33-field application registry; bridge/evaluator reject unknown fields | PASS — route, registry, unknown-target, and long-path bridge regressions |
+| Contradictory mapping state | Ambiguity hidden as confirmed | Discriminated confirmation schema: confirmed forbids candidates; ambiguous has no selected source; unconfirmed is complete or empty | PASS — contradictory-state regressions |
 | Mapping race or stale receipt | Result bound to wrong inputs | Immutable assessment input, digest binding, re-evaluate after any change | PASS at deterministic boundary; UI race remains residual below |
 | Client-computed or injected verdict | False authority | UI calls server `/api/evaluate`; strict request has no verdict; server returns verdict and digest | PASS — route, evaluator, and production-browser flows |
 | Digest described as proof/signature | Misleading assurance | Explicit disclaimer beside the on-screen receipt and in documentation | PASS locally — UI contract and production-browser flow |
 | Cross-site framing or mixed-content downgrade | UI deception or transport downgrade | Frame denial, same-origin resource/opener policy, HSTS, CSP upgrade-insecure requests | PASS on local production server; deployed-header rerun remains public gate |
-| Dependency or build compromise | Secret/data exposure | Lockfile, production audit, minimal dependencies, review build output | PASS — commit `bc4d772` full verify/build/audit, no known production vulnerabilities |
+| Dependency or build compromise | Secret/data exposure | Lockfile, production audit, minimal dependencies, review build output | PASS — current release candidate full verify/build/audit, no known production vulnerabilities; exact clean SHA is recorded at handoff |
 
 The browser parser currently caps uploads at 2 MiB; bounds archive entries,
 declared and actual expanded bytes, entry bytes, and paths; rejects duplicate
@@ -203,7 +204,12 @@ Do not silently ship a paid unauthenticated endpoint behind only the
 process-local limiter. The selected posture and its limitations must match the
 video, README, test instructions, and submission text.
 
-ExitCanary selects option 2 for Build Week. Commit `bc4d772` makes live mapping
-fail closed unless the server flag is exactly `true` and adds
-`pnpm preflight:public-fallback`; see
+ExitCanary selects option 2 for Build Week. The release candidate makes live
+mapping fail closed unless the server flag is exactly `true`, validates a
+prose-free model contract, and provides both `pnpm preflight:public-fallback`
+and `pnpm smoke:public-judge`; see
 [PUBLIC-DEMO-DEPLOYMENT.md](PUBLIC-DEMO-DEPLOYMENT.md).
+
+The credential-free `pnpm smoke:public-judge` command separately verifies the
+observable canonical host with bounded synthetic requests. It cannot inspect
+provider-stored secrets and does not replace signed-out browser or video QA.

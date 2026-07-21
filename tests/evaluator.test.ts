@@ -32,6 +32,16 @@ function checkStatus(
   return checks.find((check) => check.id === id)?.status;
 }
 
+async function sha256Hex(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(value),
+  );
+  return Array.from(new Uint8Array(digest), (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+}
+
 describe("deterministic exit-readiness evaluator", () => {
   it("returns EXIT_READY only when every required check passes", async () => {
     const receipt = await evaluateExitReadiness({
@@ -89,7 +99,7 @@ describe("deterministic exit-readiness evaluator", () => {
 
   it("returns NEEDS_REVIEW before data failures can decide the verdict", async () => {
     const receipt = await evaluateExitReadiness({
-      packet: COMPLETE_NORMALIZED_EXPORT,
+      packet: FLAWED_NORMALIZED_EXPORT,
       confirmedMapping: REVIEW_REQUIRED_FIELD_MAPPING,
     });
 
@@ -97,8 +107,9 @@ describe("deterministic exit-readiness evaluator", () => {
     expect(checkStatus(receipt.assessment.checks, "mapping.required_fields")).toBe(
       "review",
     );
-    expect(receipt.assessment.checks.slice(1).every((check) => check.status === "pass"))
-      .toBe(true);
+    expect(
+      receipt.assessment.checks.slice(1).some((check) => check.status === "fail"),
+    ).toBe(true);
   });
 
   it.each(["missing", "unconfirmed", "ambiguous"] as const)(
@@ -252,6 +263,21 @@ describe("deterministic exit-readiness evaluator", () => {
       ...CONFIRMED_FIELD_MAPPING,
       mappingId: "mapping_canary_confirmed_002",
     });
+    const changedPacketMetadata = NormalizedCrmExportSchema.parse({
+      ...COMPLETE_NORMALIZED_EXPORT,
+      sourceExportName: "same-assessment-different-source-name.zip",
+    });
+    const changedMappingMetadata = FieldMappingSetSchema.parse({
+      ...CONFIRMED_FIELD_MAPPING,
+      mappings: CONFIRMED_FIELD_MAPPING.mappings.map((mapping) =>
+        mapping.canonicalField === "contacts.email"
+          ? {
+              ...mapping,
+              sourceField: "primary_email",
+            }
+          : mapping,
+      ),
+    });
     const packetReceipt = await evaluateExitReadiness({
       packet: changedPacket,
       confirmedMapping: CONFIRMED_FIELD_MAPPING,
@@ -260,10 +286,83 @@ describe("deterministic exit-readiness evaluator", () => {
       packet: COMPLETE_NORMALIZED_EXPORT,
       confirmedMapping: changedMapping,
     });
+    const packetMetadataReceipt = await evaluateExitReadiness({
+      packet: changedPacketMetadata,
+      confirmedMapping: CONFIRMED_FIELD_MAPPING,
+    });
+    const mappingMetadataReceipt = await evaluateExitReadiness({
+      packet: COMPLETE_NORMALIZED_EXPORT,
+      confirmedMapping: changedMappingMetadata,
+    });
+    const expectedDigestInput = {
+      canaryVersion: first.canaryVersion,
+      evaluatorVersion: first.evaluatorVersion,
+      packet: request.packet,
+      confirmedMapping: request.confirmedMapping,
+      deterministicAssessment: first.assessment,
+    };
+    const expectedDigest = await sha256Hex(stableSerialize(expectedDigestInput));
+    const changedVersionDigest = await sha256Hex(
+      stableSerialize({
+        ...expectedDigestInput,
+        evaluatorVersion: `${first.evaluatorVersion}-changed`,
+      }),
+    );
 
     expect(repeated.digest).toBe(first.digest);
+    expect(first.digest).toBe(expectedDigest);
+    expect(changedVersionDigest).not.toBe(first.digest);
     expect(packetReceipt.digest).not.toBe(first.digest);
     expect(mappingReceipt.digest).not.toBe(first.digest);
+    expect(packetMetadataReceipt.assessment).toEqual(first.assessment);
+    expect(mappingMetadataReceipt.assessment).toEqual(first.assessment);
+    expect(packetMetadataReceipt.digest).not.toBe(first.digest);
+    expect(mappingMetadataReceipt.digest).not.toBe(first.digest);
+  });
+
+  it("rejects contradictory confirmation and ambiguity states", () => {
+    const confirmed = CONFIRMED_FIELD_MAPPING.mappings[0]!;
+    const candidate = {
+      sourceTable: "companies",
+      sourceField: "id",
+      evidencePath: "/companies.csv/fields/id",
+    };
+
+    expect(
+      FieldMappingSetSchema.safeParse({
+        ...CONFIRMED_FIELD_MAPPING,
+        mappings: [
+          {
+            ...confirmed,
+            candidates: [candidate, { ...candidate, sourceField: "company_id" }],
+          },
+        ],
+      }).success,
+    ).toBe(false);
+    expect(
+      FieldMappingSetSchema.safeParse({
+        ...CONFIRMED_FIELD_MAPPING,
+        mappings: [
+          {
+            ...confirmed,
+            confirmation: "ambiguous",
+            candidates: [candidate, { ...candidate, sourceField: "company_id" }],
+          },
+        ],
+      }).success,
+    ).toBe(false);
+    expect(
+      FieldMappingSetSchema.safeParse({
+        ...CONFIRMED_FIELD_MAPPING,
+        mappings: [
+          {
+            ...confirmed,
+            confirmation: "unconfirmed",
+            sourceField: null,
+          },
+        ],
+      }).success,
+    ).toBe(false);
   });
 
   it("canonicalizes property order before digesting equivalent data", () => {

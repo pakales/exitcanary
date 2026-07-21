@@ -1466,6 +1466,16 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
+  .exit-dock-panel {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 18px;
+  }
+
+  .exit-actions {
+    justify-content: flex-start;
+  }
+
   .mapping-summary,
   .verdict-summary {
     min-height: auto;

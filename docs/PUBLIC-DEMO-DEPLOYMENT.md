@@ -21,9 +21,9 @@ EXITCANARY_LIVE_MAPPING_ENABLED=false
 EXITCANARY_PUBLIC_ORIGIN=https://the-canonical-public-host.example
 ```
 
-`EXITCANARY_PUBLIC_ORIGIN` must be the exact public HTTPS origin, without a
-path, query, fragment, credentials, or local/private address. Do not pin a
-provider preview URL if judges will use a different canonical URL.
+`EXITCANARY_PUBLIC_ORIGIN` must be the exact public HTTPS origin on a DNS
+hostname, without a path, query, fragment, credentials, or literal IP address.
+Do not pin a provider preview URL if judges will use a different canonical URL.
 
 ## Fail-closed preflight
 
@@ -43,6 +43,26 @@ The preflight validates configuration. It does not deploy, inspect provider
 settings, or prove that a deployed host received those settings.
 
 ## Post-deployment judge check
+
+First run the bounded, credential-free black-box verifier against the exact
+canonical origin:
+
+```bash
+pnpm smoke:public-judge -- https://the-canonical-public-host.example
+```
+
+It follows no redirects, sends no cookies, authorization, or API keys, caps
+every response and ZIP entry before extraction, and uses only the public
+synthetic canary. It checks the page security headers, canary pack, both judge
+ZIP variants, the exact 33-target registry, effective fallback-only mapper
+identity, foreign-origin rejection on mapping and evaluation, `EXIT_READY`,
+`NOT_EXIT_READY`, and `NEEDS_REVIEW`, deterministic digest stability and
+separation, and caller-verdict rejection. Any mismatch exits non-zero and
+blocks publication.
+
+The black-box verifier proves observable deployed behavior. It cannot prove the
+provider's stored environment, actual file-picker experience, layout,
+accessibility, console state, or public video playback; keep those manual gates.
 
 In a signed-out, isolated browser session:
 

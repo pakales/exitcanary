@@ -140,11 +140,20 @@ before the Responses API call, which uses:
 - `store: false`;
 - no authority over checks or verdicts.
 
-Each proposed mapping identifies a canonical entity/field pair, a supplied file
-and source field, one to three evidence paths, a `0..1` confidence value, and a
-bounded rationale. Every canonical target must appear exactly once across the
+Each model proposal identifies a canonical entity/field pair, a supplied file
+and source field, one to three evidence paths, a `0..1` confidence value, and
+one closed basis enum: `header_semantics`, `sample_value_semantics`, or
+`combined_evidence`. The model output contains no free-form rationale or
+summary field. Every canonical target must appear exactly once across the
 proposal and unresolved lists. The implemented schema is documented in
 [EVIDENCE-CONTRACT.md](EVIDENCE-CONTRACT.md).
+
+The response contract is discriminated: `live` requires the exact pinned model
+identifier, while `fallback` requires `model: null` and a visible warning.
+After evidence-reference validation, the application replaces the model basis
+enum with bounded application-owned rationale and count summary text. Raw model
+prose therefore cannot cross the mapper boundary or compete with the
+deterministic verdict.
 
 The mapping route accepts only a request ID and bounded source evidence. It
 injects all 33 canonical targets from the application-owned registry and rejects
@@ -164,7 +173,9 @@ evaluated directly.
 
 The confirmed set uses `confirmed-field-mapping@1.0.0` and covers 33 canonical
 fields. A confirmed field requires a source table, source field, and at least
-one evidence path. An ambiguous field requires at least two candidates.
+one evidence path and cannot retain ambiguity candidates. An ambiguous field
+must contain no selected source and at least two bounded candidates. An
+unconfirmed field contains either one complete proposal or no source evidence.
 
 ### 4. Evaluate
 
@@ -182,8 +193,9 @@ rejected; the UI does not calculate the authoritative verdict or digest.
 
 ### 5. Build receipt
 
-Receipt truth fields are deterministic. Model prose may be displayed alongside
-the receipt but must not be embedded as authoritative truth.
+Receipt truth fields are deterministic. The model contract contains no free-form
+summary prose; application-owned mapping explanation is never embedded as
+receipt truth.
 
 The server-returned receipt contract is `exit-readiness-receipt@1.0.0` and includes the canary
 and evaluator versions, packet and mapping IDs/versions, algorithm, full digest,

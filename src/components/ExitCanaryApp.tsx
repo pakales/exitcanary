@@ -27,6 +27,7 @@ import {
 import {
   type ChangeEvent,
   type DragEvent,
+  type MouseEvent,
   type ReactNode,
   useId,
   useMemo,
@@ -686,14 +687,15 @@ export function ExitCanaryApp() {
             "Local deterministic mapping selected. No field evidence was sent to OpenAI.",
         });
       }
+      const mappingSummary = `${proposal.mode === "live" ? "GPT-5.6 Sol" : "Deterministic fallback"} proposed ${proposal.proposedMapping.length} mappings; ${proposal.unresolved.length} remain unresolved. Human confirmation is required.`;
       const session: MappingSession = {
         packetName: parsedPacket.packetName,
         mapping: mappingViewFromResponse(proposal, sources),
         unresolved: proposal.unresolved.length,
         mapperMode: proposal.mode,
         model: proposal.model,
-        warning: proposal.warning,
-        summary: proposal.summary,
+        warning: proposal.mode === "fallback" ? proposal.warning : undefined,
+        summary: mappingSummary,
         source: "upload",
         requestId,
         parsedPacket,
@@ -706,9 +708,7 @@ export function ExitCanaryApp() {
       };
       setActiveDemo(session);
       setPhase("review");
-      setAnnouncement(
-        `${proposal.mode === "live" ? "GPT-5.6 Sol" : "Deterministic fallback"} proposed ${proposal.proposedMapping.length} mappings; ${proposal.unresolved.length} remain unresolved. Human confirmation is required.`,
-      );
+      setAnnouncement(mappingSummary);
     } catch (caught) {
       const message =
         caught instanceof ExportParseError || caught instanceof Error
@@ -840,12 +840,19 @@ export function ExitCanaryApp() {
     void handleFile(event.dataTransfer.files?.[0]);
   };
 
+  const focusWorkbench = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    const workbench = document.getElementById("exit-workbench");
+    workbench?.focus({ preventScroll: true });
+    workbench?.scrollIntoView({ block: "start" });
+  };
+
   const verdict = result?.verdict;
   const workbenchState = verdictKind(verdict);
 
   return (
     <main className="exit-app" onDragLeave={() => setIsDragging(false)} onDragOver={onDragOver} onDrop={onDrop}>
-      <a className="skip-link" href="#exit-workbench">
+      <a className="skip-link" href="#exit-workbench" onClick={focusWorkbench}>
         Skip to exit test
       </a>
       <div className="exit-ambient" aria-hidden="true" />
@@ -908,6 +915,7 @@ export function ExitCanaryApp() {
           id="exit-workbench"
           aria-busy={isBusy}
           aria-labelledby="workbench-title"
+          tabIndex={-1}
         >
           <h2 className="sr-only" id="workbench-title">
             Exit readiness test
@@ -1001,8 +1009,8 @@ export function ExitCanaryApp() {
                   <p>
                     {busyStage === "mapping"
                       ? allowOpenAiMapping
-                        ? "With your consent, only bounded paths, field names, and up to five sample values per field may be sent to OpenAI. GPT-5.6 cannot produce a verdict."
-                        : "Local deterministic aliases are mapping fields. No export evidence is sent to OpenAI, and no model can produce a verdict."
+                        ? "With your consent, only bounded paths, field names, and up to five sample values per field may be sent to OpenAI. GPT-5.6 cannot set the authoritative exit-readiness verdict."
+                        : "Local deterministic aliases are mapping fields. No export evidence is sent to OpenAI, and no model can set the authoritative exit-readiness verdict."
                       : "The confirmed semantic map is fixed. The model cannot set or change this verdict."}
                   </p>
                 </div>
@@ -1106,6 +1114,7 @@ export function ExitCanaryApp() {
                         </span>
                         <label className="mapping-confirm">
                           <input
+                            aria-label={`Reviewed ${item.canonicalPath}`}
                             checked={activeDemo.confirmedFields.includes(
                               item.canonicalPath,
                             )}
