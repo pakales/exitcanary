@@ -75,7 +75,7 @@ manual checks. The public video check is recorded below.
 - Public black-box result: **PASS** for the bounded judge contract, including
   the observable fallback-only mapper identity.
 - Public YouTube demo:
-  [https://youtu.be/-x6M4nCIX3k](https://youtu.be/-x6M4nCIX3k) — signed-out
+  [https://youtu.be/FWoRiuhg8sY](https://youtu.be/FWoRiuhg8sY) — signed-out
   1080p HD, unmuted audio, English (United States) captions, title, duration,
   crop, and public visibility verified.
 - Public Build Week submission:
