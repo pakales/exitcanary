@@ -28,13 +28,14 @@ The root build session ran the full gate against the current release candidate:
 files / 86 tests, five independent public-preflight tests, seven independent
 public-smoke tests, the production build, and a production dependency audit
 with no known vulnerabilities. Tool versions were Node `v22.22.2` and pnpm
-`10.33.2`. The exact committed SHA and final repeat time are recorded in the
-operator handoff after the clean-commit rerun.
+`10.33.2`. The tested runtime source snapshot is
+`a178969062a631aa669dcdf664b9c05f4a297d28`.
 
 This commit adds fail-closed live-model activation, a keyless fallback-only
 public deployment preflight, checked-in ZIP → fallback → human-confirmed
-evaluation coverage, and adversarial parser/API regressions. Public URL,
-provider configuration, and signed-out judge checks remain separate gates.
+evaluation coverage, and adversarial parser/API regressions. The bounded public
+black-box judge check passed at `https://exitcanary.vercel.app`; provider-stored
+configuration and signed-out browser/file-picker QA remain separate gates.
 
 ## Deterministic test matrix
 
@@ -84,7 +85,7 @@ provider configuration, and signed-out judge checks remain separate gates.
 | Attachment in ZIP | Local SHA-256 and byte length recorded | PASS — safe ZIP and canary-pack regressions |
 | Malformed CSV/JSON | Explicit parse error, never empty success | PASS — malformed-input regressions |
 | Wrong content type | API rejects request | PASS — map/evaluate route regressions |
-| Wrong origin | API rejects request and ignores spoofed forwarding headers | PASS locally; deployed canonical-origin check remains public gate |
+| Wrong origin | API rejects request and ignores spoofed forwarding headers | PASS locally and in the public black-box smoke at `https://exitcanary.vercel.app` |
 | Extra schema keys | Strict request and model-output validation rejects them | PASS — request, verdict, and model-output regressions |
 | Body over 256 KiB, with or without `Content-Length` | API returns `413` before model call | PASS — advertised and streamed body regressions |
 | Invalid UTF-8 or JSON | API returns sanitized `400` error | PASS — map/evaluate route regressions |
@@ -104,8 +105,8 @@ provider configuration, and signed-out judge checks remain separate gates.
 | `GET /api/demo-export?variant=complete` | Generated ZIP traverses parser → normalizer → evaluator and reaches `EXIT_READY` | PASS — demo-export regression |
 | `GET /api/demo-export?variant=flawed` | Generated ZIP traverses the same path and fails exactly six checks | PASS — demo-export regression |
 | Invalid demo-export variant | Returns sanitized `400` JSON | PASS — demo-export regression |
-| Configured production origin | Exact origin accepted; mismatched/malformed origin rejected; forwarded headers ignored | PASS locally; deployed-origin rerun remains public gate |
-| Production security headers | HSTS, CSP, frame denial, same-origin resource/opener, and origin-agent headers present | PASS on local production server; deployed-origin rerun remains public gate |
+| Configured production origin | Exact origin accepted; mismatched/malformed origin rejected; forwarded headers ignored | PASS locally and in the public black-box smoke at `https://exitcanary.vercel.app` |
+| Production security headers | HSTS, CSP, frame denial, same-origin resource/opener, and origin-agent headers present | PASS on the local production server and published fallback-only origin |
 
 ## Public judge black-box verifier
 
@@ -113,7 +114,7 @@ The post-deployment verifier is deliberately separate from environment
 preflight:
 
 ```bash
-pnpm smoke:public-judge -- https://the-canonical-public-host.example
+pnpm smoke:public-judge -- https://exitcanary.vercel.app
 ```
 
 Its Node test suite injects bounded responses and proves fail-closed handling of
@@ -123,6 +124,11 @@ digests. After deployment, the same CLI checks the real canonical host without
 cookies, authorization, credentials, redirects, retries, or non-synthetic data.
 It does not replace the signed-out browser/file-picker/accessibility/video pass
 or provider-side environment inspection.
+
+Status: **PASS** against `https://exitcanary.vercel.app` on tested runtime
+source snapshot `a178969062a631aa669dcdf664b9c05f4a297d28`. The observed mapper
+contract was fallback-only; this result is not evidence of a public paid model
+endpoint or of the provider's stored secret configuration.
 
 ## Live GPT-5.6 Sol smoke test
 
@@ -269,7 +275,7 @@ This record covers the final local product gate. Public provider and account
 checks are recorded separately after publication.
 
 ```text
-Source product commit: final release HEAD (resolve with `git rev-parse HEAD` in the operator handoff)
+Source product commit: a178969062a631aa669dcdf664b9c05f4a297d28
 Validation date (UTC): 2026-07-21
 Node: v22.22.2
 pnpm: 10.33.2
@@ -297,16 +303,20 @@ Secret scan: PASS - ignored .env.local; no key-shaped value in tracked source
 Fallback-only API smoke: PASS - mode fallback, model null, no verdict, live disabled
 Public fallback preflight: PASS with synthetic canonical HTTPS environment
 Local production black-box smoke: PASS - headers, bounded ZIPs, exact target registry, both origin gates, three verdict states, digest checks
+Public judge black-box smoke: PASS - https://exitcanary.vercel.app; fallback-only mapper contract; tested runtime source snapshot a178969062a631aa669dcdf664b9c05f4a297d28
 
-Local demo video: PASS - 93.000s, 1920x1080 H.264/yuv420p/30fps,
+Local demo video: PASS - 14,120,268 bytes; 93.000s, 1920x1080 H.264/yuv420p/30fps,
 AAC 48kHz stereo, -15.99 LUFS, -4.50 dBTP, 0 decode errors, no trimmed speech
 Captions: PASS - 25 cues, max 2 lines, exact locked narration, final cue at 93.000s
-Video SHA-256: 2841d7a758f4528bbcc24ddef4ea9163b265f9adcaf796c636784eeedaf30513
+Video SHA-256: 0008054d917baa8a08d13cef791cb69f8f1008975c5abf97b8e38028a999477e
+SRT SHA-256: e77efca6efbd25f13750c98c1198b742471f91cf55b73854f6888baf79e7fa45
+Thumbnail SHA-256: 044c2389917513fe56759c1076fa8536d4a90a821b857d92c1671b0a7ac1013c
 Video privacy/claims audit: PASS - synthetic data only; live/bundled/simulated
 states separated; AI voice disclosed; no secret or account identifier found
 
-Skipped checks: deployed public URL, effective provider environment, signed-out
-judge upload, and public-video playback remain submission gates.
+Skipped checks: provider-stored environment inspection, signed-out browser/file
+upload/accessibility QA, public-video playback, `/feedback` confirmation, and
+Devpost submission state remain separate gates.
 Residual risk accepted for submission: receipt binds self-supplied normalized
 evidence rather than attesting vendor origin. The public judge posture therefore
 ships no API key and disables live mapping; process-local model rate limiting is

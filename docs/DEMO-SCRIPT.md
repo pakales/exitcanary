@@ -2,7 +2,11 @@
 
 Status: **local upload candidate verified; not public yet.** The exact candidate
 is `exitcanary-build-week-demo-1080p.mp4`, SHA-256
-`2841d7a758f4528bbcc24ddef4ea9163b265f9adcaf796c636784eeedaf30513`.
+`0008054d917baa8a08d13cef791cb69f8f1008975c5abf97b8e38028a999477e`,
+size 14,120,268 bytes. Its final SRT SHA-256 is
+`e77efca6efbd25f13750c98c1198b742471f91cf55b73854f6888baf79e7fa45`,
+and the final thumbnail SHA-256 is
+`044c2389917513fe56759c1076fa8536d4a90a821b857d92c1671b0a7ac1013c`.
 
 The video is 93.000 seconds, below the strict three-minute limit. It uses the
 OpenAI `marin` synthetic voice and carries a visible/metadata disclosure. The
@@ -102,16 +106,23 @@ split.
 ## Publication gate
 
 - [x] 93.000 seconds; H.264, `yuv420p`, 30 fps, 1920 × 1080.
+- [x] Final MP4 is 14,120,268 bytes with SHA-256
+      `0008054d917baa8a08d13cef791cb69f8f1008975c5abf97b8e38028a999477e`.
 - [x] AAC stereo, 48 kHz, -15.99 LUFS, -4.50 dBTP.
 - [x] Zero decode errors, no trimmed speech, longest silence 2.758 seconds.
 - [x] 25 English cues, at most two lines, exact locked narration.
+- [x] Final SRT SHA-256 is
+      `e77efca6efbd25f13750c98c1198b742471f91cf55b73854f6888baf79e7fa45`;
+      final thumbnail SHA-256 is
+      `044c2389917513fe56759c1076fa8536d4a90a821b857d92c1671b0a7ac1013c`.
 - [x] Live, fallback/bundled, deterministic verdict, and simulation states are
       visually distinct.
 - [x] Digest limitation and synthetic voice disclosure are visible.
 - [x] Secret/account-identifier and claim scans pass.
 - [ ] Upload to **public YouTube**; unlisted visibility is not sufficient.
 - [ ] Watch the uploaded 1080p version with captions and audio while signed out.
-- [ ] Copy the final public URL into the submission and re-check runtime.
+- [ ] Copy the final public YouTube URL into the submission and re-check
+      signed-out playback.
 
 Do not rebuild or re-record merely because the product gained non-visual
 fail-closed deployment hardening after capture. Rebuild only if public behavior,

@@ -32,12 +32,18 @@ keep the public artifacts available through at least August 12.
 | Project name | ExitCanary |
 | Tagline | Before you enter, prove you can leave. |
 | Category | **Work & Productivity** |
-| Repository URL | **PENDING PUBLICATION** — verify judge access before submission |
-| Demo URL | **PENDING PUBLICATION** — public YouTube playback must pass signed-out QA |
-| Free working demo/test URL | **PENDING PUBLICATION** — verify the full judge path signed out |
-| Codex `/feedback` session ID | **PENDING HUMAN CONFIRMATION** — current core-build thread candidate is `019f813d-fdfb-7e93-8365-783b07ade86f`; use the exact ID returned by `/feedback` |
+| Repository URL | [github.com/pakales/exitcanary](https://github.com/pakales/exitcanary) — public; tested runtime source snapshot `a178969062a631aa669dcdf664b9c05f4a297d28` |
+| Public YouTube demo video | **PENDING HUMAN PUBLICATION/QA** — do not infer an upload or Devpost entry from the verified local video candidate |
+| Free working demo/test URL | [exitcanary.vercel.app](https://exitcanary.vercel.app) — public, intentionally keyless/fallback-only; bounded black-box judge smoke passed on the tested runtime snapshot |
+| Codex `/feedback` session ID | **UNCONFIRMED / NOT RECORDED AS SUBMITTED** — current core-build thread candidate is `019f813d-fdfb-7e93-8365-783b07ade86f`; use it only after the primary thread returns that exact ID through `/feedback` and it is manually entered in Devpost |
 | License | MIT |
 | Team/member details | **PENDING HUMAN CONFIRMATION** — match the Devpost account and authorization |
+
+Publication checkpoint on 2026-07-21: the repository and fallback-only judge
+URL above are public, and
+`pnpm smoke:public-judge -- https://exitcanary.vercel.app` passed against source snapshot
+`a178969062a631aa669dcdf664b9c05f4a297d28`. This does not prove a public
+YouTube upload, a completed Devpost entry, or a submitted `/feedback` ID.
 
 ## Short description
 
@@ -185,8 +191,8 @@ unclear product experience or unsupported impact claim.
 
 | Criterion | What the submission should show | Gate |
 | --- | --- | --- |
-| Technological implementation | Real CSV/JSON/ZIP intake, prose-free structured GPT-5.6 mapping, strict authority boundary, deterministic checks, tests | Current release candidate passed 12 Vitest files / 86 tests, five public-preflight tests, seven public-smoke tests, the production build, and dependency audit; exact clean release SHA is recorded at handoff |
-| Design | Coherent 93-second start-to-verdict story, clear exit-door metaphor, accessible desktop/mobile UI | Local production QA passed at 1440×900, 390×844, 200% equivalent reflow, reduced motion, keyboard flow, and zero console errors; deployed-origin rerun remains a publication gate |
+| Technological implementation | Real CSV/JSON/ZIP intake, prose-free structured GPT-5.6 mapping, strict authority boundary, deterministic checks, tests | Source snapshot `a178969062a631aa669dcdf664b9c05f4a297d28` passed 12 Vitest files / 86 tests, five public-preflight tests, seven public-smoke tests, the production build, and dependency audit; its public fallback-only deployment passed the bounded judge smoke |
+| Design | Coherent 93-second start-to-verdict story, clear exit-door metaphor, accessible desktop/mobile UI | Local production QA passed at 1440×900, 390×844, 200% equivalent reflow, reduced motion, keyboard flow, and zero console errors; the public black-box origin check passed, while signed-out browser/file-picker QA remains a separate manual gate |
 | Potential impact | Named buyer and buying/renewal moment; exact failures the product exposes | Submission copy and deterministic flawed/complete evidence are complete locally |
 | Quality of idea | Executable pre-purchase exit drill positioned against adjacent checklists, migration, and cloud-exit tools | Analog red-team is documented without a first/only claim |
 
@@ -229,21 +235,24 @@ seed-export-compare loop before purchase or renewal.
 - [x] Verify the receipt disclaimer is visible beside the digest.
 - [x] Verify both `/api/demo-export` variants download and traverse the real
       parser/normalizer/evaluator lane.
-- [ ] Pin and verify `EXITCANARY_PUBLIC_ORIGIN` on the deployed canonical URL.
-- [ ] Run `pnpm smoke:public-judge -- <canonical-origin>` and preserve its
-      all-PASS output for the exact deployed release.
+- [x] Pin and verify `EXITCANARY_PUBLIC_ORIGIN` on the deployed canonical URL,
+      `https://exitcanary.vercel.app`.
+- [x] Run `pnpm smoke:public-judge -- https://exitcanary.vercel.app`; the
+      bounded black-box contract passed for source snapshot
+      `a178969062a631aa669dcdf664b9c05f4a297d28`.
 - [x] Exercise `EXITCANARY_LIVE_MAPPING_ENABLED=false` and confirm no model call
       occurs.
 - [x] Verify desktop/mobile/keyboard/reduced-motion behavior and zero console errors.
-- [ ] Provide a free working demo/test URL and test its full judge path while
-      logged out in a clean browser session.
+- [x] Provide the free working demo/test URL
+      `https://exitcanary.vercel.app`; the credential-free black-box judge path
+      passed. Signed-out browser/file-picker accessibility QA remains separate.
 - [x] Scan repository, client bundle, local video candidate, and screenshots for
       secrets/private data.
-- [ ] Confirm the repository URL is accessible to judges.
+- [x] Confirm the public repository URL is accessible at
+      `https://github.com/pakales/exitcanary`.
 - [x] Confirm MIT license, README setup, Codex collaboration story, and sample
       data are present whether the judging repository is public or private.
-- [ ] If private, share repository access with `testing@devpost.com` and
-      `build-week-event@openai.com`, then verify the invitations.
+- [x] Private-repository sharing is not applicable; the repository is public.
 - [ ] Upload the verified 93-second local candidate to public YouTube (not
       unlisted); it already includes audible narration explaining Codex and
       GPT-5.6.
@@ -252,8 +261,8 @@ seed-export-compare loop before purchase or renewal.
       external asset.
 - [ ] Watch the uploaded video end-to-end while logged out.
 - [ ] Add the verified free working demo/test URL to Devpost.
-- [ ] If the demo is private, include working judge credentials and test them in
-      a clean session.
+- [x] Private-demo credentials are not applicable; the public fallback-only URL
+      passed the bounded black-box check without cookies or authorization.
 - [ ] Keep the project available free of charge and without restriction through
       at least August 12, covering the official August 5 judging end and the
       overview page's later August 7 date.
@@ -289,8 +298,12 @@ Do not publish any of the following without new evidence and review:
 
 The exact local upload candidate is `exitcanary-build-week-demo-1080p.mp4` with
 SHA-256
-`2841d7a758f4528bbcc24ddef4ea9163b265f9adcaf796c636784eeedaf30513`.
-It is **not public yet**. Its deterministic production audit passed:
+`0008054d917baa8a08d13cef791cb69f8f1008975c5abf97b8e38028a999477e`
+and size 14,120,268 bytes. The final SRT SHA-256 is
+`e77efca6efbd25f13750c98c1198b742471f91cf55b73854f6888baf79e7fa45`;
+the final thumbnail SHA-256 is
+`044c2389917513fe56759c1076fa8536d4a90a821b857d92c1671b0a7ac1013c`.
+The candidate is **not public yet**. Its deterministic production audit passed:
 
 - 93.000 seconds, 1920 × 1080, H.264, `yuv420p`, 30 fps;
 - AAC stereo at 48 kHz, -15.99 LUFS, -4.50 dBTP;
@@ -306,7 +319,8 @@ It is **not public yet**. Its deterministic production audit passed:
   closing tagline.
 
 This closes local video production and the user's voice-choice approval only.
-YouTube upload, signed-out playback, and public links remain hard gates.
+YouTube upload and signed-out playback, copying the verified video and demo URLs
+into Devpost, and final submission confirmation remain hard gates.
 
 ## Suggested tags
 

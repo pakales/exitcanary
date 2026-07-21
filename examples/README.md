@@ -41,11 +41,12 @@ Their readable source trees are in [`exports/complete/`](exports/complete/) and
 [`exports/flawed/`](exports/flawed/). The targeted
 `tests/end-to-end-artifacts.test.ts` gate parses each checked-in ZIP, normalizes
 it with the fixed 33-field mapping, and evaluates it. The final local source
-gate on 2026-07-21 included this contract in its 82-test pass. The complete ZIP
+gate on 2026-07-21 included this contract in its 12-file / 86-test Vitest pass.
+The complete ZIP
 produced `EXIT_READY` with nine passes and the flawed ZIP produced
 `NOT_EXIT_READY` with six failures. The verification record is documented in
 [`docs/TESTING.md`](../docs/TESTING.md) and is built on product commit
-`bc4d772`.
+`a178969062a631aa669dcdf664b9c05f4a297d28`.
 
 Use **Use my export** to exercise the parser and live/fallback mapper path. The
 separate **Run pre-mapped flawed demo** button uses an in-app normalized fixture

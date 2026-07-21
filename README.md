@@ -86,11 +86,13 @@ labeled deterministic fallback even if a key is inherited. Do not expose a
 public live key behind only the process-local limiter: durable identity/quota,
 abuse monitoring, and an operational kill switch are pre-public gates.
 
-The selected Build Week public posture is a keyless, fallback-only judge URL.
-Its fail-closed environment check and signed-out verification procedure are in
+The published Build Week judge URL is
+[https://exitcanary.vercel.app](https://exitcanary.vercel.app). It is
+intentionally keyless and fallback-only. Its fail-closed environment check and
+signed-out verification procedure are in
 [docs/PUBLIC-DEMO-DEPLOYMENT.md](docs/PUBLIC-DEMO-DEPLOYMENT.md). Run
-`pnpm preflight:public-fallback` with the exact planned production environment
-before any public deployment.
+`pnpm preflight:public-fallback` with the exact production environment before
+every future public release.
 
 Never expose the key through a `NEXT_PUBLIC_` variable. The no-key path for a
 real upload defaults to local deterministic exact-alias mapping unless the user
@@ -155,10 +157,13 @@ GPT-5.6 Sol's runtime contribution is different from Codex's build role: the
 model interprets unfamiliar export field names under a strict structured-output
 contract and has no verdict field.
 
-Before submission, preserve the dated repository history and confirm the real
-primary build thread's `/feedback` session ID in Devpost. Judge URLs, public
-video playback, account eligibility, and deployed-origin checks remain explicit
-public gates in the submission checklist.
+The source is public at
+[github.com/pakales/exitcanary](https://github.com/pakales/exitcanary), and the
+bounded public judge smoke passed against the fallback-only deployment. Before
+submission, preserve the dated repository history and confirm the real primary
+build thread's `/feedback` session ID in Devpost. Public YouTube playback,
+account eligibility, the Devpost entry, and final submission confirmation
+remain explicit gates in the submission checklist.
 
 ## Verification
 
@@ -173,27 +178,26 @@ pnpm audit:prod
 pnpm verify
 ```
 
-`pnpm verify` is the repository gate. The current release candidate passed
-lint, typecheck, 12 Vitest files / 86 tests, five public-preflight tests, seven
-public-smoke tests, the production build, and the production audit. The exact
-committed SHA is recorded in the final handoff after the same gate is repeated
-on the clean commit. The full manual and automated matrix is in
-[docs/TESTING.md](docs/TESTING.md).
+`pnpm verify` is the repository gate. Tested runtime source snapshot
+`a178969062a631aa669dcdf664b9c05f4a297d28` passed lint, typecheck, 12 Vitest
+files / 86 tests, five public-preflight tests, seven public-smoke tests, the
+production build, and the production audit. The full manual and automated
+matrix is in [docs/TESTING.md](docs/TESTING.md).
 
 The bounded synthetic live-mapping smoke also passed on the current prose-free
 model contract: `gpt-5.6-sol` returned 33 proposals, zero unresolved targets,
 no warning, and no verdict field. This does not authorize a public paid endpoint
-or replace a final deployed smoke test.
+or change the public deployment's separately verified fallback-only posture.
 
-After deployment, run the bounded black-box verifier against the exact canonical
-origin. It sends only checked-in synthetic canary data, rejects redirects, and
-never sends credentials:
+The bounded black-box verifier passed against the published canonical origin
+for the tested runtime snapshot. It sends only checked-in synthetic canary
+data, rejects redirects, and never sends credentials:
 
 ```bash
-pnpm smoke:public-judge -- https://the-canonical-public-host.example
+pnpm smoke:public-judge -- https://exitcanary.vercel.app
 ```
 
-The command verifies the public security headers, bounded canary and judge ZIPs,
+The command verified the public security headers, bounded canary and judge ZIPs,
 the exact 33-target registry, fallback-only mapper identity, foreign-origin
 rejection on both APIs, all three deterministic verdict states,
 injected-verdict rejection, digest stability, and digest separation. Browser
@@ -246,9 +250,10 @@ model prompts, request handling, persistence, or receipt generation.
 
 ExitCanary is prepared for the **Work & Productivity** category. The official
 challenge evaluates technological implementation, design, potential impact,
-and idea quality. Submission facts, URLs, live validation results, the public
-video, and the Codex `/feedback` session ID remain explicit pre-submission
-gates in [docs/BUILD-WEEK-SUBMISSION.md](docs/BUILD-WEEK-SUBMISSION.md).
+and idea quality. The source repository and fallback-only judge URL are public;
+the public YouTube video, exact Codex `/feedback` session ID, Devpost fields,
+and submission confirmation remain explicit pre-submission gates in
+[docs/BUILD-WEEK-SUBMISSION.md](docs/BUILD-WEEK-SUBMISSION.md).
 
 ## License
 
