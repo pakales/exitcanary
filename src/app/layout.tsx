@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   description:
     "Test whether a SaaS export preserves the business data you need before you commit.",
   applicationName: "ExitCanary",
+  authors: [{ name: "EV1 Labs", url: "https://ev1labs.com/" }],
+  creator: "EV1 Labs",
+  publisher: "EV1 Labs",
   keywords: [
     "SaaS exit",
     "data portability",
@@ -37,6 +40,21 @@ export const metadata: Metadata = {
     url: "/",
     type: "website",
     siteName: "ExitCanary",
+    images: [
+      {
+        url: "/exitcanary-og.png",
+        width: 1200,
+        height: 630,
+        alt: "ExitCanary — before you enter, prove you can leave",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ExitCanary — Before you enter, prove you can leave.",
+    description:
+      "A pre-purchase exit drill for SaaS data with a deterministic readiness verdict.",
+    images: ["/exitcanary-og.png"],
   },
   robots: {
     index: true,

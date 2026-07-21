@@ -1217,6 +1217,24 @@ export function ExitCanaryApp() {
             {announcement}
           </p>
         </section>
+
+        <footer className="exit-footer">
+          <p>
+            Built by{" "}
+            <a href="https://ev1labs.com/" target="_blank" rel="noreferrer">
+              EV1 Labs
+            </a>
+          </p>
+          <a
+            className="exit-footer-collection"
+            href="https://ev1labs.com/labs/build-week-2026/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Build Week 2026 collection
+            <ArrowRight aria-hidden="true" />
+          </a>
+        </footer>
       </div>
     </main>
   );
